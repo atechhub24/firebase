@@ -1,0 +1,21 @@
+{
+  "name": "@atechhub/firebase",
+  "version": "0.0.1",
+  "description": "All the firebase utils once place",
+  "keywords": [
+    "firebase",
+    "react",
+    "auth",
+    "storage",
+    "database"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github-atech:atechhub24/firebase.git"
+  },
+  "license": "MIT",
+  "author": "A Tech Hub",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {}
+}

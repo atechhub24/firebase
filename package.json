@@ -16,6 +16,8 @@
   "license": "MIT",
   "author": "A Tech Hub",
   "type": "module",
-  "main": "index.js",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "scripts": {}
 }

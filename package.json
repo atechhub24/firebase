@@ -29,5 +29,8 @@
   "files": [
     "dist"
   ],
-  "scripts": {}
+  "scripts": {},
+  "publishConfig": {
+    "access": "public"
+  }
 }

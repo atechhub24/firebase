@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { Settings, Database, HardDrive, Code, RefreshCw } from "lucide-react";
 import { getApps } from "firebase/app";
+import { Code, Database, HardDrive, Settings } from "lucide-react";
+import { useEffect, useState } from "react";
+import CodeExamples from "./CodeExamples";
 import DatabasePlayground from "./DatabasePlayground";
 import StoragePlayground from "./StoragePlayground";
-import CodeExamples from "./CodeExamples";
 
 interface PlaygroundDashboardProps {
   firebaseConfig: any;

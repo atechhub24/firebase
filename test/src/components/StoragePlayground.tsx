@@ -1,20 +1,19 @@
-import { useState, useRef } from "react";
 import { file } from "@atechhub/firebase";
 import { getApps } from "firebase/app";
 import {
-  Upload,
-  Download,
-  Trash2,
-  List,
-  File,
-  Image,
-  FileText,
-  HardDrive,
   AlertCircle,
   CheckCircle,
-  Eye,
   Code,
+  Eye,
+  File,
+  FileText,
+  HardDrive,
+  Image,
+  List,
+  Trash2,
+  Upload,
 } from "lucide-react";
+import { useRef, useState } from "react";
 import CodeBlock from "./CodeBlock";
 
 type StorageAction = "upload" | "list" | "delete";

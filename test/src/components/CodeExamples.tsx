@@ -1,14 +1,13 @@
-import { useState } from "react";
 import {
+  Book,
+  Check,
   Code,
   Copy,
-  Check,
-  Play,
-  Book,
-  Zap,
   Database,
   HardDrive,
+  Zap,
 } from "lucide-react";
+import { useState } from "react";
 import CodeBlock from "./CodeBlock";
 
 interface Example {

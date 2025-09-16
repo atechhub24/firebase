@@ -1,12 +1,11 @@
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
-import { ChevronDown, ChevronRight, Copy, Check } from "lucide-react";
 import CodeBlock from "./CodeBlock";
 
 const Documentation: React.FC = () => {
   const [expandedSections, setExpandedSections] = useState<string[]>([
     "quick-start",
   ]);
-  const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) =>
@@ -14,16 +13,6 @@ const Documentation: React.FC = () => {
         ? prev.filter((s) => s !== section)
         : [...prev, section]
     );
-  };
-
-  const copyToClipboard = async (text: string, id: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedCode(id);
-      setTimeout(() => setCopiedCode(null), 2000);
-    } catch (err) {
-      console.error("Failed to copy:", err);
-    }
   };
 
   const sections = [

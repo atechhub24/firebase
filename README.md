@@ -43,6 +43,72 @@ const storage = getStorage(app);
 import { mutate, file } from "@atechhub/firebase";
 ```
 
+## 🔐 REST Auth (Email/Password)
+
+Add lightweight REST-based auth helpers for environments where you don't want to pull the full Firebase Auth SDK.
+
+### Configure
+
+```typescript
+import { configureAuth } from "@atechhub/firebase";
+
+configureAuth({
+  authUrl: "https://identitytoolkit.googleapis.com/v1/accounts",
+  apiKey: "your-firebase-web-api-key",
+});
+// Or via env vars:
+// NEXT_PUBLIC_FIREBASE_AUTH_URL=https://identitytoolkit.googleapis.com/v1/accounts
+// NEXT_PUBLIC_FIREBASE_API_KEY=your-firebase-web-api-key
+```
+
+### Use
+
+```typescript
+import {
+  createUser,
+  changePassword,
+  deleteUser,
+  FirebaseAuthError,
+} from "@atechhub/firebase";
+
+// Register
+const user = await createUser("user@example.com", "securePassword123");
+
+// Change password
+await changePassword(
+  "user@example.com",
+  "currentPassword123",
+  "newSecurePassword456"
+);
+
+// Delete account
+await deleteUser("user@example.com", "currentPassword123");
+```
+
+### Error handling
+
+```typescript
+try {
+  await createUser(email, password);
+} catch (error) {
+  if (error instanceof FirebaseAuthError) {
+    // error.code may be 400/401/409/429 etc.
+    console.error("Auth error:", error.message, error.code);
+  }
+}
+```
+
+### Types
+
+```typescript
+import type {
+  SignupResponse,
+  UpdateResponse,
+  DeleteResponse,
+  FirebaseAuthConfig,
+} from "@atechhub/firebase";
+```
+
 ## 📊 Realtime Database Operations
 
 ### The Power of `mutate()` Function

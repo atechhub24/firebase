@@ -109,6 +109,182 @@ import type {
 } from "@atechhub/firebase";
 ```
 
+## 🔑 SDK Auth (Email/Password)
+
+Use Firebase Auth SDK with a clean, type-safe interface for email/password authentication.
+
+### Setup
+
+```typescript
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// Import our auth helper
+import { firebaseAuth } from "@atechhub/firebase";
+```
+
+### Usage
+
+```typescript
+import { firebaseAuth } from "@atechhub/firebase";
+
+// 🔐 LOGIN - Sign in existing user
+const userCredential = await firebaseAuth({
+  action: "login",
+  email: "user@example.com",
+  password: "securePassword123",
+});
+
+console.log("User signed in:", userCredential.user.uid);
+
+// 📝 SIGNUP - Create new user
+const newUserCredential = await firebaseAuth({
+  action: "signup",
+  email: "newuser@example.com",
+  password: "securePassword123",
+});
+
+console.log("User created:", newUserCredential.user.uid);
+
+// 🚪 LOGOUT - Sign out current user
+await firebaseAuth({
+  action: "logout",
+});
+
+// 🔄 CHANGE PASSWORD - Update user password
+await firebaseAuth({
+  action: "changePassword",
+  newPassword: "newSecurePassword456",
+});
+```
+
+### Error Handling
+
+```typescript
+try {
+  await firebaseAuth({
+    action: "login",
+    email: "user@example.com",
+    password: "wrongPassword",
+  });
+} catch (error) {
+  if (error.code === "auth/user-not-found") {
+    console.error("User does not exist");
+  } else if (error.code === "auth/wrong-password") {
+    console.error("Incorrect password");
+  } else if (error.code === "auth/invalid-email") {
+    console.error("Invalid email format");
+  } else {
+    console.error("Authentication error:", error.message);
+  }
+}
+```
+
+### React Hook Example
+
+```typescript
+import { useState } from "react";
+import { firebaseAuth } from "@atechhub/firebase";
+
+export const useAuth = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const login = async (email: string, password: string) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const result = await firebaseAuth({
+        action: "login",
+        email,
+        password,
+      });
+      setLoading(false);
+      return result;
+    } catch (err: any) {
+      setError(err.message);
+      setLoading(false);
+      throw err;
+    }
+  };
+
+  const signup = async (email: string, password: string) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const result = await firebaseAuth({
+        action: "signup",
+        email,
+        password,
+      });
+      setLoading(false);
+      return result;
+    } catch (err: any) {
+      setError(err.message);
+      setLoading(false);
+      throw err;
+    }
+  };
+
+  const logout = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      await firebaseAuth({ action: "logout" });
+      setLoading(false);
+    } catch (err: any) {
+      setError(err.message);
+      setLoading(false);
+      throw err;
+    }
+  };
+
+  const changePassword = async (newPassword: string) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      await firebaseAuth({
+        action: "changePassword",
+        newPassword,
+      });
+      setLoading(false);
+    } catch (err: any) {
+      setError(err.message);
+      setLoading(false);
+      throw err;
+    }
+  };
+
+  return {
+    login,
+    signup,
+    logout,
+    changePassword,
+    loading,
+    error,
+  };
+};
+```
+
+### Types
+
+```typescript
+import type {
+  LoginAction,
+  SignupAction,
+  LogoutAction,
+  ChangePasswordAction,
+  AuthActionPayload,
+} from "@atechhub/firebase";
+```
+
 ## 📊 Realtime Database Operations
 
 ### The Power of `mutate()` Function

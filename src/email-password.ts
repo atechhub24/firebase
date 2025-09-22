@@ -5,52 +5,80 @@ import {
   signInWithEmailAndPassword,
   signOut,
   updatePassword,
+  type UserCredential,
 } from "firebase/auth";
-import { assertEmailPassword } from "./validation";
+import { assertEmailPassword, validatePassword } from "./validation";
+
+export type LoginAction = {
+  action: "login";
+  email: string;
+  password: string;
+};
+
+export type SignupAction = {
+  action: "signup";
+  email: string;
+  password: string;
+};
+
+export type LogoutAction = {
+  action: "logout";
+};
+
+export type ChangePasswordAction = {
+  action: "changePassword";
+  newPassword: string;
+};
+
+export type AuthActionPayload =
+  | LoginAction
+  | SignupAction
+  | LogoutAction
+  | ChangePasswordAction;
 
 export async function firebaseAuth(
-  action: "login" | "signup" | "logout" | "changePassword",
-  data: Record<string, unknown>
-) {
+  payload: LoginAction
+): Promise<UserCredential>;
+export async function firebaseAuth(
+  payload: SignupAction
+): Promise<UserCredential>;
+export async function firebaseAuth(payload: LogoutAction): Promise<void>;
+export async function firebaseAuth(
+  payload: ChangePasswordAction
+): Promise<void>;
+export async function firebaseAuth(
+  payload: AuthActionPayload
+): Promise<unknown> {
   if (getApps().length === 0) {
     throw new Error("Firebase not initialized");
   }
   const app = getApp();
   const auth = getAuth(app);
 
-  switch (action) {
-    case "login":
-      if (!data.email || !data.password) {
-        throw new Error("Email and password are required");
-      }
-      assertEmailPassword(data.email, data.password);
-      return await signInWithEmailAndPassword(
-        auth,
-        data.email as string,
-        data.password as string
-      );
-    case "signup":
-      if (!data.email || !data.password) {
-        throw new Error("Email and password are required");
-      }
-      assertEmailPassword(data.email, data.password);
-      return await createUserWithEmailAndPassword(
-        auth,
-        data.email as string,
-        data.password as string
-      );
-    case "logout":
+  switch (payload.action) {
+    case "login": {
+      const { email, password } = payload;
+      assertEmailPassword(email, password);
+      return await signInWithEmailAndPassword(auth, email, password);
+    }
+    case "signup": {
+      const { email, password } = payload;
+      assertEmailPassword(email, password);
+      return await createUserWithEmailAndPassword(auth, email, password);
+    }
+    case "logout": {
       return await signOut(auth);
-    case "changePassword":
-      if (!data.newPassword) {
-        throw new Error("Email, password and new password are required");
+    }
+    case "changePassword": {
+      const { newPassword } = payload;
+      if (!validatePassword(newPassword)) {
+        throw new Error("Password must be at least 6 characters long");
       }
       const currentUser = auth.currentUser;
       if (!currentUser) {
         throw new Error("User not found");
       }
-      return await updatePassword(auth.currentUser, data.newPassword as string);
+      return await updatePassword(currentUser, newPassword);
+    }
   }
-
-  return auth;
 }

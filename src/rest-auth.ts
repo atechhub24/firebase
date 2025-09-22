@@ -72,15 +72,8 @@ export class FirebaseAuthError extends Error {
   }
 }
 
-// Input validation utilities
-const validateEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
-
-const validatePassword = (password: string): boolean => {
-  return password.length >= 6; // Firebase minimum requirement
-};
+// Input validation utilities (shared)
+import { validateEmail, validatePassword } from "./validation";
 
 // Configuration management
 let currentConfig: FirebaseAuthConfig = defaultConfig;

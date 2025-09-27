@@ -1981,67 +1981,159 @@ body {
 /* CodeBlock Component Styles */
 .code-block-container {
   position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
 }
 
 .code-block-title {
-  background-color: #1f2937;
-  color: white;
-  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+  color: #f8fafc;
+  padding: 0.75rem 1rem 0.75rem 4rem;
   font-size: 0.875rem;
-  font-weight: 500;
-  border-top-left-radius: 0.5rem;
-  border-top-right-radius: 0.5rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  letter-spacing: -0.025em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.code-block-title::before {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.5rem;
+  height: 0.5rem;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 
+    1rem 0 0 #eab308,
+    2rem 0 0 #ef4444;
 }
 
 .code-block-content {
-  background-color: #111827;
-  color: #f3f4f6;
-  padding: 1rem;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: #e2e8f0;
+  padding: 1.25rem;
   overflow-x: auto;
   position: relative;
   font-family: var(--font-mono);
+  min-height: 3rem;
 }
 
 .code-block-content.with-title {
-  border-bottom-left-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
+  border-top: none;
 }
 
 .code-block-content.without-title {
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
 }
 
 .code-block-copy-button {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 1rem;
+  right: 1rem;
   padding: 0.5rem;
-  background-color: #374151;
-  border: none;
-  border-radius: 0.25rem;
-  color: #d1d5db;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.375rem;
+  color: #e2e8f0;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 2rem;
+  height: 2rem;
 }
 
 .code-block-copy-button:hover {
-  background-color: #4b5563;
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
   color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.code-block-copy-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.code-block-copy-button svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.code-block-copy-button:hover svg {
+  transform: scale(1.1);
 }
 
 .code-block-pre {
   font-size: 0.875rem;
-  color: #f3f4f6;
+  color: #e2e8f0;
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
+  line-height: 1.6;
+  font-family: var(--font-mono);
+  font-feature-settings: 'liga' 1, 'calt' 1;
 }
 
 .code-block-code {
-  color: #f3f4f6;
+  color: #e2e8f0;
   font-family: var(--font-mono);
+  font-feature-settings: 'liga' 1, 'calt' 1;
+}
+
+/* Syntax highlighting for different languages */
+.code-block-code.language-bash .token.comment {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.code-block-code.language-bash .token.string {
+  color: #fbbf24;
+}
+
+.code-block-code.language-bash .token.variable {
+  color: #60a5fa;
+}
+
+.code-block-code.language-javascript .token.keyword {
+  color: #c084fc;
+}
+
+.code-block-code.language-javascript .token.string {
+  color: #34d399;
+}
+
+.code-block-code.language-javascript .token.function {
+  color: #fbbf24;
+}
+
+/* Scrollbar styling for code blocks */
+.code-block-content::-webkit-scrollbar {
+  height: 0.5rem;
+}
+
+.code-block-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 0.25rem;
+}
+
+.code-block-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 0.25rem;
+}
+
+.code-block-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }

@@ -14,12 +14,42 @@ function App() {
         <div className="max-width-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
-              <h1 className="text-2xl font-bold text-gray-900">
-                @atechhub/firebase
-              </h1>
-              <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                v0.0.1
-              </span>
+              <div className="flex items-center space-x-3">
+                <h1 className="text-2xl font-bold text-gray-900">
+                  @atechhub/firebase
+                </h1>
+                <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                  v0.0.1
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <a
+                  href="https://www.npmjs.com/package/@atechhub/firebase"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="header-link"
+                  title="View on npm"
+                >
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/npm/npm-original-wordmark.svg"
+                    alt="npm"
+                    className="header-link-icon"
+                  />
+                </a>
+                <a
+                  href="https://github.com/atechhub24/firebase"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="header-link"
+                  title="View on GitHub"
+                >
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original-wordmark.svg"
+                    alt="GitHub"
+                    className="header-link-icon"
+                  />
+                </a>
+              </div>
             </div>
             <nav className="modern-tab-container flex space-x-1">
               <button

@@ -100,6 +100,51 @@ export const firebaseAuthConfig = {
   apiKey: env.NEXT_PUBLIC_FIREBASE_API_KEY,
 };`;
 
+const FIREBASE_PROVIDER_CONTENT = `"use client";
+
+import { firebaseAuthConfig, firebaseConfig } from "@/lib/env";
+import { configureAuth } from "@atechhub/firebase";
+import { getApp, getApps, initializeApp } from "firebase/app";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getDatabase, onValue, ref } from "firebase/database";
+import { useEffect } from "react";
+
+interface FirebaseProviderProps {
+  children: React.ReactNode;
+}
+
+export function FirebaseProvider({ children }: FirebaseProviderProps) {
+  
+  useEffect(() => {
+    try {
+      // Initialize @atechhub/firebase auth
+      configureAuth(firebaseAuthConfig);
+      // Initialize Firebase app
+      const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+      // Check if Firebase is initialized correctly
+      console.log("Firebase initialized:", app.name);
+      const auth = getAuth(app);
+      const database = getDatabase(app);
+      onAuthStateChanged(auth, (loggedInUser) => {
+        if (loggedInUser?.uid) {
+          // fetch data
+          const userRef = ref(database, \`users/\${loggedInUser.uid}\`);
+          onValue(userRef, (snap) => {
+            const userData = snap.val();
+            console.log(userData);
+          });
+        } else {          
+          console.log("User not logged in.");
+        }
+      });
+    } catch (error) {
+      console.error("Failed to initialize Firebase:", error);
+    }
+  }, []);
+
+  return <>{children}</>;
+}`;
+
 // Components
 const InfoIcon: React.FC = () => (
   <svg className="nextjs-info-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -200,6 +245,40 @@ const TypeSafeEnvStep: React.FC = () => (
   </div>
 );
 
+const FirebaseProviderStep: React.FC = () => (
+  <div className="nextjs-step">
+    <div className="nextjs-step-number">3</div>
+    <div className="nextjs-step-content">
+      <h4 className="nextjs-step-title">Create Firebase Provider Component</h4>
+      <p className="nextjs-step-description">
+        Create a{" "}
+        <code className="code-inline">
+          components/providers/firebase-provider.tsx
+        </code>{" "}
+        file to initialize Firebase and handle authentication state
+      </p>
+      <CodeBlock
+        code={FIREBASE_PROVIDER_CONTENT}
+        language="typescript"
+        title="components/providers/firebase-provider.tsx"
+      />
+      <div className="nextjs-info-box">
+        <InfoIcon />
+        <div className="nextjs-info-content">
+          <h5>Firebase Provider Features</h5>
+          <ul>
+            <li>Initializes @atechhub/firebase authentication</li>
+            <li>Sets up Firebase app with proper configuration</li>
+            <li>Monitors authentication state changes</li>
+            <li>Automatically fetches user data when logged in</li>
+            <li>Provides error handling for initialization failures</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const NextJsExample: React.FC = () => (
   <div className="nextjs-guide">
     <GuideHeader />
@@ -207,7 +286,7 @@ const NextJsExample: React.FC = () => (
       <div className="nextjs-guide-steps">
         <EnvironmentStep />
         <TypeSafeEnvStep />
-        <MoreStepsPlaceholder />
+        <FirebaseProviderStep />
       </div>
     </div>
   </div>

@@ -1131,7 +1131,7 @@ function PostsList() {
       <style dangerouslySetInnerHTML={{ __html: tabStyles }} />
 
       {/* Tab Navigation */}
-      <div className="bg-white rounded-t-xl mb-6 overflow-hidden">
+      <div className="modern-tab-container mb-6 overflow-hidden">
         <nav className="flex overflow-x-auto scrollbar-hide">
           {tabs.map((tab, index) => (
             <button
@@ -1139,20 +1139,11 @@ function PostsList() {
               onClick={() => setActiveTab(tab.id)}
               className={`tab-button relative whitespace-nowrap py-3 px-4 sm:py-4 sm:px-6 font-medium text-xs sm:text-sm transition-all duration-300 ease-in-out ${
                 activeTab === tab.id
-                  ? "text-blue-600 bg-blue-50 tab-glow"
-                  : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
-              } ${index === 0 ? "rounded-tl-xl" : ""} ${
-                index === tabs.length - 1 ? "rounded-tr-xl" : ""
+                  ? "text-blue-600 active"
+                  : "text-gray-600 hover:text-gray-800"
               }`}
             >
               <span className="relative z-10">{tab.label}</span>
-              {activeTab === tab.id && (
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 rounded-t-xl opacity-60"></div>
-              )}
-              {/* Active indicator */}
-              {activeTab === tab.id && (
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-blue-600"></div>
-              )}
             </button>
           ))}
         </nav>

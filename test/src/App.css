@@ -1878,7 +1878,7 @@ body {
 .nextjs-step {
   position: relative;
   display: flex;
-  align-items: flex-start;
+  align-items: baseline;
   gap: 1rem;
 }
 

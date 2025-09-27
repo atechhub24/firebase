@@ -107,12 +107,24 @@ body {
   margin-top: 2rem;
 }
 
+.mt-0\.5 {
+  margin-top: 0.125rem;
+}
+
 .space-y-4 > * + * {
   margin-top: 1rem;
 }
 
 .space-y-6 > * + * {
   margin-top: 1.5rem;
+}
+
+.space-y-1 > * + * {
+  margin-top: 0.25rem;
+}
+
+.space-y-8 > * + * {
+  margin-top: 2rem;
 }
 
 .space-x-1 > * + * {
@@ -240,8 +252,18 @@ body {
   line-height: 1.25rem;
 }
 
+.text-base {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
 .text-lg {
   font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
   line-height: 1.75rem;
 }
 
@@ -314,6 +336,18 @@ body {
   color: #1e3a8a;
 }
 
+.text-blue-300 {
+  color: #93c5fd;
+}
+
+.text-green-400 {
+  color: #4ade80;
+}
+
+.text-yellow-300 {
+  color: #fde047;
+}
+
 .text-green-600 {
   color: #059669;
 }
@@ -362,6 +396,14 @@ body {
   color: #6b21a8;
 }
 
+.text-blue-800 {
+  color: #1e40af;
+}
+
+.text-blue-900 {
+  color: #1e3a8a;
+}
+
 .text-gray-100 {
   color: #f3f4f6;
 }
@@ -401,6 +443,14 @@ body {
 
 .bg-blue-100 {
   background-color: #dbeafe;
+}
+
+.bg-blue-600 {
+  background-color: #2563eb;
+}
+
+.bg-gray-300 {
+  background-color: #d1d5db;
 }
 
 .bg-green-50 {
@@ -612,6 +662,10 @@ body {
 }
 
 /* Width and Height Classes */
+.w-2 {
+  width: 0.5rem;
+}
+
 .w-3 {
   width: 0.75rem;
 }
@@ -620,12 +674,32 @@ body {
   width: 1rem;
 }
 
+.w-5 {
+  width: 1.25rem;
+}
+
+.w-8 {
+  width: 2rem;
+}
+
+.w-12 {
+  width: 3rem;
+}
+
+.w-16 {
+  width: 4rem;
+}
+
 .w-full {
   width: 100%;
 }
 
 .h-1 {
   height: 0.25rem;
+}
+
+.h-2 {
+  height: 0.5rem;
 }
 
 .h-3 {
@@ -646,6 +720,10 @@ body {
 
 .h-12 {
   height: 3rem;
+}
+
+.h-16 {
+  height: 4rem;
 }
 
 .min-h-96 {
@@ -867,6 +945,10 @@ body {
 
 .overflow-y-auto {
   overflow-y: auto;
+}
+
+.overflow-hidden {
+  overflow: hidden;
 }
 
 /* Opacity Classes */
@@ -1737,4 +1819,9 @@ body {
   content: "";
   display: table;
   clear: both;
+}
+
+/* Line Height Classes */
+.leading-relaxed {
+  line-height: 1.625;
 }

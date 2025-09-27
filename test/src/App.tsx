@@ -21,12 +21,12 @@ function App() {
                 v0.0.1
               </span>
             </div>
-            <nav className="flex space-x-1">
+            <nav className="modern-tab-container flex space-x-1">
               <button
                 onClick={() => setActiveTab("docs")}
-                className={`px-3 py-2 text-sm font-medium transition-colors ${
+                className={`tab-button px-4 py-2 text-sm font-medium transition-all duration-300 ease-in-out ${
                   activeTab === "docs"
-                    ? "text-blue-600 border-b-2 border-blue-600"
+                    ? "text-blue-600 active"
                     : "text-gray-500 hover:text-gray-700"
                 }`}
               >
@@ -34,9 +34,9 @@ function App() {
               </button>
               <button
                 onClick={() => setActiveTab("playground")}
-                className={`px-3 py-2 text-sm font-medium transition-colors ${
+                className={`tab-button px-4 py-2 text-sm font-medium transition-all duration-300 ease-in-out ${
                   activeTab === "playground"
-                    ? "text-blue-600 border-b-2 border-blue-600"
+                    ? "text-blue-600 active"
                     : "text-gray-500 hover:text-gray-700"
                 }`}
               >

@@ -47,63 +47,70 @@ const PlaygroundDashboard: React.FC<PlaygroundDashboardProps> = ({
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Firebase Playground
-          </h1>
-          <p className="text-gray-600">
-            Test all @atechhub/firebase features with your Firebase project
-          </p>
-        </div>
-
-        <div className="flex items-center space-x-3">
-          <div className="text-sm text-gray-500">
-            Project:{" "}
-            <span className="font-medium">{firebaseConfig.projectId}</span>
+    <div className="playground-container">
+      {/* Enhanced Header */}
+      <div className="playground-header">
+        <div className="playground-header-content">
+          <div className="playground-title-section">
+            <div className="playground-icon-wrapper">
+              <Code className="playground-main-icon" />
+            </div>
+            <div>
+              <h1 className="playground-title">Firebase Playground</h1>
+              <p className="playground-subtitle">
+                Test all @atechhub/firebase features with your Firebase project
+              </p>
+            </div>
           </div>
-          <button
-            onClick={onConfigReset}
-            className="btn btn-secondary"
-            title="Change Firebase Configuration"
-          >
-            <Settings className="h-4 w-4 mr-2" />
-            Config
-          </button>
+
+          <div className="playground-header-actions">
+            <div className="playground-project-info">
+              <span className="playground-project-label">Project:</span>
+              <span className="playground-project-name">
+                {firebaseConfig.projectId}
+              </span>
+            </div>
+            <button
+              onClick={onConfigReset}
+              className="playground-config-btn"
+              title="Change Firebase Configuration"
+            >
+              <Settings className="playground-config-icon" />
+              <span>Config</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Firebase Status */}
+      {/* Enhanced Firebase Status */}
       <div
-        className={`card ${
+        className={`playground-status ${
           isFirebaseReady
-            ? "bg-green-50 border-green-200"
-            : "bg-yellow-50 border-yellow-200"
+            ? "playground-status-ready"
+            : "playground-status-loading"
         }`}
       >
-        <div className="flex items-center space-x-3">
-          <div
-            className={`w-3 h-3 rounded-full ${
-              isFirebaseReady ? "bg-green-500 animate-pulse" : "bg-yellow-500"
-            }`}
-          />
-          <div>
-            <p
-              className={`font-medium ${
-                isFirebaseReady ? "text-green-800" : "text-yellow-800"
+        <div className="playground-status-content">
+          <div className="playground-status-indicator">
+            <div
+              className={`playground-status-dot ${
+                isFirebaseReady
+                  ? "playground-status-dot-ready"
+                  : "playground-status-dot-loading"
               }`}
-            >
+            />
+            <div className="playground-status-rings">
+              <div className="playground-status-ring" />
+              <div className="playground-status-ring" />
+            </div>
+          </div>
+          <div className="playground-status-text">
+            <h3 className="playground-status-title">
               {isFirebaseReady
                 ? "Firebase Connected"
                 : "Firebase Initializing..."}
-            </p>
-            <p
-              className={`text-sm ${
-                isFirebaseReady ? "text-green-600" : "text-yellow-600"
-              }`}
-            >
+            </h3>
+            <p className="playground-status-description">
               {isFirebaseReady
                 ? "Ready to test database and storage operations"
                 : "Please wait while Firebase initializes"}
@@ -112,55 +119,54 @@ const PlaygroundDashboard: React.FC<PlaygroundDashboardProps> = ({
         </div>
       </div>
 
-      {/* Tab Navigation */}
-      <div className="border-b border-gray-200">
-        <nav className="-mb-px flex space-x-8">
+      {/* Enhanced Tab Navigation */}
+      <div className="playground-tabs-container">
+        <nav className="playground-tabs-nav">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === tab.id
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                className={`playground-tab ${
+                  activeTab === tab.id ? "playground-tab-active" : ""
                 }`}
               >
-                <Icon
-                  className={`mr-2 h-5 w-5 ${
-                    activeTab === tab.id
-                      ? "text-blue-500"
-                      : "text-gray-400 group-hover:text-gray-500"
-                  }`}
-                />
-                {tab.name}
+                <Icon className="playground-tab-icon" />
+                <span className="playground-tab-text">{tab.name}</span>
               </button>
             );
           })}
         </nav>
       </div>
 
-      {/* Tab Description */}
-      <div className="bg-blue-50 p-4 rounded-lg">
-        <p className="text-blue-800 text-sm">
-          {tabs.find((tab) => tab.id === activeTab)?.description}
-        </p>
+      {/* Enhanced Tab Description */}
+      <div className="playground-tab-description">
+        <div className="playground-tab-description-content">
+          <p className="playground-tab-description-text">
+            {tabs.find((tab) => tab.id === activeTab)?.description}
+          </p>
+        </div>
       </div>
 
-      {/* Tab Content */}
-      <div className="min-h-96">
+      {/* Enhanced Tab Content */}
+      <div className="playground-content">
         {isFirebaseReady ? (
-          <>
+          <div className="playground-content-ready">
             {activeTab === "database" && <DatabasePlayground />}
             {activeTab === "storage" && <StoragePlayground />}
             {activeTab === "examples" && <CodeExamples />}
-          </>
+          </div>
         ) : (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <div className="loading-spinner mx-auto mb-4" />
-              <p className="text-gray-600">Initializing Firebase...</p>
+          <div className="playground-loading">
+            <div className="playground-loading-content">
+              <div className="playground-loading-spinner" />
+              <h3 className="playground-loading-title">
+                Initializing Firebase...
+              </h3>
+              <p className="playground-loading-text">
+                Setting up your Firebase connection
+              </p>
             </div>
           </div>
         )}

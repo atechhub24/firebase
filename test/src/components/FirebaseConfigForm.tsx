@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { initializeApp, getApps, deleteApp } from "firebase/app";
-import { AlertCircle, CheckCircle, Eye, EyeOff } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle,
+  Eye,
+  EyeOff,
+  Settings,
+  Zap,
+} from "lucide-react";
 
 interface FirebaseConfigFormProps {
   onConfigSubmit: (config: any) => void;
@@ -34,9 +41,15 @@ const FirebaseConfigForm: React.FC<FirebaseConfigFormProps> = ({
 
       if (inputMode === "json") {
         try {
+          // First try standard JSON parsing
           firebaseConfig = JSON.parse(jsonInput);
         } catch {
-          throw new Error("Invalid JSON format");
+          try {
+            // If JSON parsing fails, try JavaScript object parsing
+            firebaseConfig = parseJavaScriptObject(jsonInput);
+          } catch {
+            throw new Error("Invalid JSON or JavaScript object format");
+          }
         }
       } else {
         firebaseConfig = config;
@@ -71,15 +84,45 @@ const FirebaseConfigForm: React.FC<FirebaseConfigFormProps> = ({
     }
   };
 
+  const parseJavaScriptObject = (input: string): any => {
+    // Clean up the input to handle JavaScript object syntax
+    let cleanInput = input.trim();
+
+    // Remove 'const firebaseConfig = ' or similar variable declarations
+    cleanInput = cleanInput.replace(/^(const|let|var)\s+\w+\s*=\s*/, "");
+
+    // Remove trailing semicolon
+    cleanInput = cleanInput.replace(/;?\s*$/, "");
+
+    // Handle unquoted property names (JavaScript style)
+    cleanInput = cleanInput.replace(
+      /([{,]\s*)([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g,
+      '$1"$2":'
+    );
+
+    // Handle single quotes to double quotes
+    cleanInput = cleanInput.replace(/'/g, '"');
+
+    // Try to parse as JSON
+    return JSON.parse(cleanInput);
+  };
+
   const handleJsonChange = (value: string) => {
     setJsonInput(value);
     try {
       if (value.trim()) {
-        const parsed = JSON.parse(value);
+        let parsed;
+        try {
+          // First try standard JSON parsing
+          parsed = JSON.parse(value);
+        } catch {
+          // If JSON parsing fails, try JavaScript object parsing
+          parsed = parseJavaScriptObject(value);
+        }
         setConfig(parsed);
       }
     } catch {
-      // Invalid JSON, ignore
+      // Invalid format, ignore
     }
   };
 
@@ -94,225 +137,249 @@ const FirebaseConfigForm: React.FC<FirebaseConfigFormProps> = ({
   };
 
   return (
-    <div className="max-width-2xl mx-auto">
-      <div className="card">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Firebase Configuration
-          </h2>
-          <p className="text-gray-600">
-            Enter your Firebase configuration to start testing the playground
-            features. Don't worry, your config is only stored locally and never
-            sent to any server.
-          </p>
+    <div className="config-form-container">
+      <div className="config-form-card">
+        {/* Enhanced Header */}
+        <div className="config-form-header">
+          <div className="config-form-header-content">
+            <div className="config-form-icon-wrapper">
+              <Settings className="config-form-main-icon" />
+            </div>
+            <div className="config-form-title-section">
+              <h2 className="config-form-title">Firebase Configuration</h2>
+              <p className="config-form-subtitle">
+                Enter your Firebase configuration to start testing the
+                playground features. Your config is stored locally and never
+                sent to any server.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="mb-4">
-          <div className="flex space-x-2 mb-4">
+        {/* Enhanced Input Mode Selector */}
+        <div className="config-form-mode-selector">
+          <div className="config-form-tabs">
             <button
               type="button"
               onClick={() => setInputMode("json")}
-              className={`px-3 py-2 rounded text-sm font-medium ${
-                inputMode === "json"
-                  ? "bg-blue-100 text-blue-700"
-                  : "bg-gray-100 text-gray-700"
+              className={`config-form-tab ${
+                inputMode === "json" ? "config-form-tab-active" : ""
               }`}
             >
-              JSON Input
+              <Zap className="config-form-tab-icon" />
+              <span>JSON Input</span>
             </button>
             <button
               type="button"
               onClick={() => setInputMode("form")}
-              className={`px-3 py-2 rounded text-sm font-medium ${
-                inputMode === "form"
-                  ? "bg-blue-100 text-blue-700"
-                  : "bg-gray-100 text-gray-700"
+              className={`config-form-tab ${
+                inputMode === "form" ? "config-form-tab-active" : ""
               }`}
             >
-              Form Input
+              <Settings className="config-form-tab-icon" />
+              <span>Form Input</span>
             </button>
           </div>
         </div>
 
+        {/* Enhanced Error Display */}
         {error && (
-          <div className="alert alert-error mb-4">
-            <AlertCircle className="h-4 w-4 mr-2 inline" />
-            {error}
+          <div className="config-form-error">
+            <div className="config-form-error-content">
+              <AlertCircle className="config-form-error-icon" />
+              <div className="config-form-error-text">
+                <h4 className="config-form-error-title">Configuration Error</h4>
+                <p className="config-form-error-message">{error}</p>
+              </div>
+            </div>
           </div>
         )}
 
-        <form onSubmit={handleFormSubmit}>
+        <form onSubmit={handleFormSubmit} className="config-form-form">
           {inputMode === "json" ? (
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Firebase Configuration (JSON)
-              </label>
-              <textarea
-                value={jsonInput}
-                onChange={(e) => handleJsonChange(e.target.value)}
-                className="input textarea"
-                rows={12}
-                placeholder={JSON.stringify(exampleConfig, null, 2)}
-                required
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Paste your Firebase config object from the Firebase Console
-              </p>
+            <div className="config-form-json-section">
+              <div className="config-form-field">
+                <label className="config-form-label">
+                  Firebase Configuration (JSON/JavaScript Object)
+                </label>
+                <div className="config-form-textarea-wrapper">
+                  <textarea
+                    value={jsonInput}
+                    onChange={(e) => handleJsonChange(e.target.value)}
+                    className="config-form-textarea"
+                    rows={12}
+                    placeholder={`// Supports both formats:
+
+// JSON format:
+${JSON.stringify(exampleConfig, null, 2)}
+
+// JavaScript object format:
+const firebaseConfig = {
+  apiKey: 'AIzaSyC...',
+  authDomain: 'your-project.firebaseapp.com',
+  databaseURL: 'https://your-project-default-rtdb.firebaseio.com',
+  projectId: 'your-project-id',
+  storageBucket: 'your-project.appspot.com',
+  messagingSenderId: '123456789',
+  appId: '1:123456789:web:abcdef123456'
+};`}
+                    required
+                  />
+                </div>
+                <p className="config-form-field-hint">
+                  Paste your Firebase config from the Firebase Console (supports
+                  both JSON and JavaScript object formats)
+                </p>
+              </div>
             </div>
           ) : (
-            <div className="space-y-4 mb-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  API Key
-                </label>
-                <div className="relative">
+            <div className="config-form-fields-section">
+              <div className="config-form-field">
+                <label className="config-form-label">API Key</label>
+                <div className="config-form-input-wrapper">
                   <input
                     type={showApiKey ? "text" : "password"}
                     value={config.apiKey}
                     onChange={(e) =>
                       setConfig({ ...config, apiKey: e.target.value })
                     }
-                    className="input pr-10"
+                    className="config-form-input config-form-input-with-button"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowApiKey(!showApiKey)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    className="config-form-input-button"
                   >
                     {showApiKey ? (
-                      <EyeOff className="h-4 w-4" />
+                      <EyeOff className="config-form-input-button-icon" />
                     ) : (
-                      <Eye className="h-4 w-4" />
+                      <Eye className="config-form-input-button-icon" />
                     )}
                   </button>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Auth Domain
-                </label>
+              <div className="config-form-field">
+                <label className="config-form-label">Auth Domain</label>
                 <input
                   type="text"
                   value={config.authDomain}
                   onChange={(e) =>
                     setConfig({ ...config, authDomain: e.target.value })
                   }
-                  className="input"
+                  className="config-form-input"
                   placeholder="your-project.firebaseapp.com"
                   required
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Database URL
-                </label>
+              <div className="config-form-field">
+                <label className="config-form-label">Database URL</label>
                 <input
                   type="url"
                   value={config.databaseURL}
                   onChange={(e) =>
                     setConfig({ ...config, databaseURL: e.target.value })
                   }
-                  className="input"
+                  className="config-form-input"
                   placeholder="https://your-project-default-rtdb.firebaseio.com"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Project ID
-                </label>
+              <div className="config-form-field">
+                <label className="config-form-label">Project ID</label>
                 <input
                   type="text"
                   value={config.projectId}
                   onChange={(e) =>
                     setConfig({ ...config, projectId: e.target.value })
                   }
-                  className="input"
+                  className="config-form-input"
                   placeholder="your-project-id"
                   required
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Storage Bucket
-                </label>
+              <div className="config-form-field">
+                <label className="config-form-label">Storage Bucket</label>
                 <input
                   type="text"
                   value={config.storageBucket}
                   onChange={(e) =>
                     setConfig({ ...config, storageBucket: e.target.value })
                   }
-                  className="input"
+                  className="config-form-input"
                   placeholder="your-project.appspot.com"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Messaging Sender ID
-                </label>
+              <div className="config-form-field">
+                <label className="config-form-label">Messaging Sender ID</label>
                 <input
                   type="text"
                   value={config.messagingSenderId}
                   onChange={(e) =>
                     setConfig({ ...config, messagingSenderId: e.target.value })
                   }
-                  className="input"
+                  className="config-form-input"
                   placeholder="123456789"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  App ID
-                </label>
+              <div className="config-form-field">
+                <label className="config-form-label">App ID</label>
                 <input
                   type="text"
                   value={config.appId}
                   onChange={(e) =>
                     setConfig({ ...config, appId: e.target.value })
                   }
-                  className="input"
+                  className="config-form-input"
                   placeholder="1:123456789:web:abcdef123456"
                 />
               </div>
             </div>
           )}
 
+          {/* Enhanced Submit Button */}
           <button
             type="submit"
             disabled={loading}
-            className="btn btn-primary w-full"
+            className={`config-form-submit ${
+              loading ? "config-form-submit-loading" : ""
+            }`}
           >
-            {loading ? (
-              <>
-                <div className="loading-spinner mr-2" />
-                Initializing Firebase...
-              </>
-            ) : (
-              <>
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Initialize Firebase & Start Playground
-              </>
-            )}
+            <div className="config-form-submit-content">
+              {loading ? (
+                <>
+                  <div className="config-form-submit-spinner" />
+                  <span>Initializing Firebase...</span>
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="config-form-submit-icon" />
+                  <span>Initialize Firebase & Start Playground</span>
+                </>
+              )}
+            </div>
           </button>
         </form>
 
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-          <h3 className="text-sm font-medium text-blue-800 mb-2">
-            Where to find your Firebase config:
-          </h3>
-          <ol className="text-sm text-blue-700 space-y-1 list-decimal list-inside">
-            <li>Go to the Firebase Console</li>
-            <li>Select your project</li>
-            <li>Click on Project Settings (gear icon)</li>
-            <li>Scroll down to "Your apps" section</li>
-            <li>Copy the config object from your web app</li>
-          </ol>
+        {/* Enhanced Help Section */}
+        <div className="config-form-help">
+          <div className="config-form-help-content">
+            <h3 className="config-form-help-title">
+              Where to find your Firebase config:
+            </h3>
+            <ol className="config-form-help-list">
+              <li>Go to the Firebase Console</li>
+              <li>Select your project</li>
+              <li>Click on Project Settings (gear icon)</li>
+              <li>Scroll down to "Your apps" section</li>
+              <li>Copy the config object from your web app</li>
+            </ol>
+          </div>
         </div>
       </div>
     </div>

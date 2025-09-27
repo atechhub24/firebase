@@ -126,6 +126,19 @@ const CopyButton: React.FC<{ text: string }> = ({ text }) => {
 
 const PackageManagerTabs: React.FC = () => {
   const [activePm, setActivePm] = useState<string>("npm");
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      const activeCommand =
+        packageManagers.find((pm) => pm.id === activePm)?.command || "";
+      await navigator.clipboard.writeText(activeCommand);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
 
   const packageManagers = [
     {
@@ -182,58 +195,75 @@ const PackageManagerTabs: React.FC = () => {
     packageManagers.find((pm) => pm.id === activePm)?.command || "";
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden">
+    <div className="terminal-container">
       {/* Terminal Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-gray-50 to-gray-100">
-        <div className="flex items-center space-x-2">
-          <div className="flex space-x-1">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+      <div className="terminal-header">
+        <div className="flex items-center space-x-3">
+          <div className="terminal-dots">
+            <div className="terminal-dot red"></div>
+            <div className="terminal-dot yellow"></div>
+            <div className="terminal-dot green"></div>
           </div>
-          <div className="text-gray-500 text-sm font-mono font-medium">
-            terminal
-          </div>
+          <div className="terminal-title">terminal</div>
         </div>
-        <CopyButton text={activeCommand} />
+        <button onClick={handleCopy} className="copy-button">
+          {copied ? (
+            <>
+              <svg
+                className="w-3 h-3 inline mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              Copied!
+            </>
+          ) : (
+            <>
+              <svg
+                className="w-3 h-3 inline mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                />
+              </svg>
+              Copy
+            </>
+          )}
+        </button>
       </div>
 
       {/* Package Manager Tabs */}
-      <div className="flex bg-gradient-to-r from-gray-50 to-gray-100 overflow-x-auto scrollbar-hide">
-        {packageManagers.map((pm, index) => (
+      <div className="package-manager-tabs">
+        {packageManagers.map((pm) => (
           <button
             key={pm.id}
             onClick={() => setActivePm(pm.id)}
-            className={`tab-button relative px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium transition-all duration-300 ease-in-out whitespace-nowrap ${
-              activePm === pm.id
-                ? "bg-white text-gray-900 active"
-                : "text-gray-500 hover:text-gray-700 hover:bg-white/50"
-            } ${index === 0 ? "rounded-tl-lg" : ""} ${
-              index === packageManagers.length - 1 ? "rounded-tr-lg" : ""
-            }`}
+            className={`pm-tab ${activePm === pm.id ? "active" : ""}`}
           >
-            <div className="flex items-center space-x-2 relative z-10">
-              {pm.icon}
-              <span>{pm.label}</span>
-            </div>
-            {activePm === pm.id && (
-              <div className="absolute inset-0 bg-gradient-to-r from-white to-gray-50 rounded-t-lg opacity-90"></div>
-            )}
-            {/* Active indicator */}
-            {activePm === pm.id && (
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-blue-600"></div>
-            )}
+            {pm.icon}
+            <span>{pm.label}</span>
           </button>
         ))}
       </div>
 
-      {/* Code Content */}
-      <div className="p-4 bg-white">
-        <div className="flex items-center space-x-2">
-          <span className="text-green-600 font-mono text-sm">$</span>
-          <code className="text-gray-800 font-mono text-sm">
-            {activeCommand}
-          </code>
+      {/* Terminal Content */}
+      <div className="terminal-content">
+        <div className="flex items-center">
+          <span className="terminal-prompt">$</span>
+          <span className="terminal-command">{activeCommand}</span>
         </div>
       </div>
     </div>

@@ -183,21 +183,6 @@ const InfoBox: React.FC = () => (
   </div>
 );
 
-const LoadingDots: React.FC = () => (
-  <div className="nextjs-loading-dots">
-    {[...Array(3)].map((_, i) => (
-      <div key={i} className="nextjs-loading-dot" />
-    ))}
-  </div>
-);
-
-const MoreStepsPlaceholder: React.FC = () => (
-  <div className="nextjs-more-steps">
-    <LoadingDots />
-    <p>More steps coming soon...</p>
-  </div>
-);
-
 const EnvironmentStep: React.FC = () => (
   <div className="nextjs-step">
     <div className="nextjs-step-number">1</div>

@@ -7,13 +7,14 @@ export interface FirebaseAuthConfig {
 // Default configuration that can be overridden
 const defaultConfig: FirebaseAuthConfig = {
   authUrl:
-    process.env.NEXT_PUBLIC_FIREBASE_AUTH_URL ||
-    process.env.FIREBASE_AUTH_URL ||
-    "",
+    (typeof process !== "undefined"
+      ? process.env.NEXT_PUBLIC_FIREBASE_AUTH_URL ||
+        process.env.FIREBASE_AUTH_URL
+      : "") || "",
   apiKey:
-    process.env.NEXT_PUBLIC_FIREBASE_API_KEY ||
-    process.env.FIREBASE_API_KEY ||
-    "",
+    (typeof process !== "undefined"
+      ? process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.FIREBASE_API_KEY
+      : "") || "",
 };
 
 // Response types

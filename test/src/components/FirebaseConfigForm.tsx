@@ -94,7 +94,7 @@ const FirebaseConfigForm: React.FC<FirebaseConfigFormProps> = ({
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-width-2xl mx-auto">
       <div className="card">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
@@ -112,7 +112,7 @@ const FirebaseConfigForm: React.FC<FirebaseConfigFormProps> = ({
             <button
               type="button"
               onClick={() => setInputMode("json")}
-              className={`px-3 py-2 rounded-md text-sm font-medium ${
+              className={`px-3 py-2 rounded text-sm font-medium ${
                 inputMode === "json"
                   ? "bg-blue-100 text-blue-700"
                   : "bg-gray-100 text-gray-700"
@@ -123,7 +123,7 @@ const FirebaseConfigForm: React.FC<FirebaseConfigFormProps> = ({
             <button
               type="button"
               onClick={() => setInputMode("form")}
-              className={`px-3 py-2 rounded-md text-sm font-medium ${
+              className={`px-3 py-2 rounded text-sm font-medium ${
                 inputMode === "form"
                   ? "bg-blue-100 text-blue-700"
                   : "bg-gray-100 text-gray-700"

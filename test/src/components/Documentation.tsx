@@ -1,19 +1,247 @@
-import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import CodeBlock from "./CodeBlock";
 
-const Documentation: React.FC = () => {
-  const [expandedSections, setExpandedSections] = useState<string[]>([
-    "quick-start",
-  ]);
+// Custom styles for enhanced tabs
+const tabStyles = `
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .animate-slideIn {
+    animation: slideIn 0.2s ease-out;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .tab-glow {
+    /* Removed shadow effects */
+  }
+  
+  .tab-button {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .tab-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .tab-button:hover::before {
+    left: 100%;
+  }
+`;
 
-  const toggleSection = (section: string) => {
-    setExpandedSections((prev) =>
-      prev.includes(section)
-        ? prev.filter((s) => s !== section)
-        : [...prev, section]
-    );
+const CopyButton: React.FC<{ text: string }> = ({ text }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
   };
+
+  return (
+    <button
+      onClick={handleCopy}
+      className="flex items-center space-x-1 px-3 py-2 text-xs text-gray-500 hover:text-gray-700 hover:bg-white/80 rounded-lg transition-all duration-200"
+    >
+      {copied ? (
+        <>
+          <svg
+            className="w-3 h-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+          <span>Copied!</span>
+        </>
+      ) : (
+        <>
+          <svg
+            className="w-3 h-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+            />
+          </svg>
+          <span>Copy</span>
+        </>
+      )}
+    </button>
+  );
+};
+
+const PackageManagerTabs: React.FC = () => {
+  const [activePm, setActivePm] = useState<string>("npm");
+
+  const packageManagers = [
+    {
+      id: "npm",
+      label: "npm",
+      command: "npm install @atechhub/firebase firebase",
+      icon: (
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/npm/npm-original.svg"
+          alt="npm"
+          className="pm-icon npm-icon"
+        />
+      ),
+    },
+    {
+      id: "yarn",
+      label: "yarn",
+      command: "yarn add @atechhub/firebase firebase",
+      icon: (
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/yarn/yarn-original.svg"
+          alt="yarn"
+          className="pm-icon yarn-icon"
+        />
+      ),
+    },
+    {
+      id: "pnpm",
+      label: "pnpm",
+      command: "pnpm add @atechhub/firebase firebase",
+      icon: (
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pnpm/pnpm-original.svg"
+          alt="pnpm"
+          className="pm-icon pnpm-icon"
+        />
+      ),
+    },
+    {
+      id: "bun",
+      label: "bun",
+      command: "bun add @atechhub/firebase firebase",
+      icon: (
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bun/bun-original.svg"
+          alt="bun"
+          className="pm-icon bun-icon"
+        />
+      ),
+    },
+  ];
+
+  const activeCommand =
+    packageManagers.find((pm) => pm.id === activePm)?.command || "";
+
+  return (
+    <div className="bg-white rounded-xl overflow-hidden">
+      {/* Terminal Header */}
+      <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-gray-50 to-gray-100">
+        <div className="flex items-center space-x-2">
+          <div className="flex space-x-1">
+            <div className="w-3 h-3 rounded-full bg-red-500"></div>
+            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+          </div>
+          <div className="text-gray-500 text-sm font-mono font-medium">
+            terminal
+          </div>
+        </div>
+        <CopyButton text={activeCommand} />
+      </div>
+
+      {/* Package Manager Tabs */}
+      <div className="flex bg-gradient-to-r from-gray-50 to-gray-100 overflow-x-auto scrollbar-hide">
+        {packageManagers.map((pm, index) => (
+          <button
+            key={pm.id}
+            onClick={() => setActivePm(pm.id)}
+            className={`tab-button relative px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium transition-all duration-300 ease-in-out whitespace-nowrap ${
+              activePm === pm.id
+                ? "bg-white text-gray-900 active"
+                : "text-gray-500 hover:text-gray-700 hover:bg-white/50"
+            } ${index === 0 ? "rounded-tl-lg" : ""} ${
+              index === packageManagers.length - 1 ? "rounded-tr-lg" : ""
+            }`}
+          >
+            <div className="flex items-center space-x-2 relative z-10">
+              {pm.icon}
+              <span>{pm.label}</span>
+            </div>
+            {activePm === pm.id && (
+              <div className="absolute inset-0 bg-gradient-to-r from-white to-gray-50 rounded-t-lg opacity-90"></div>
+            )}
+            {/* Active indicator */}
+            {activePm === pm.id && (
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-blue-600"></div>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Code Content */}
+      <div className="p-4 bg-white">
+        <div className="flex items-center space-x-2">
+          <span className="text-green-600 font-mono text-sm">$</span>
+          <code className="text-gray-800 font-mono text-sm">
+            {activeCommand}
+          </code>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Documentation: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<string>("installation");
 
   const sections = [
     {
@@ -22,14 +250,7 @@ const Documentation: React.FC = () => {
       content: (
         <div className="space-y-4">
           <p>Install the package along with Firebase:</p>
-          <CodeBlock
-            code={`npm install @atechhub/firebase firebase
-# or
-yarn add @atechhub/firebase firebase
-# or
-pnpm add @atechhub/firebase firebase`}
-            language="bash"
-          />
+          <PackageManagerTabs />
         </div>
       ),
     },
@@ -391,6 +612,169 @@ console.log('Files in directory:', files);
       ),
     },
     {
+      id: "rest-auth",
+      title: "REST Auth",
+      content: (
+        <div className="space-y-6">
+          <div>
+            <h4 className="text-lg font-semibold mb-3">
+              REST Auth (Email/Password)
+            </h4>
+            <p className="mb-3">
+              Add lightweight REST-based auth helpers for environments where you
+              don't want to pull the full Firebase Auth SDK.
+            </p>
+
+            <div>
+              <h5 className="font-semibold mb-2">Configure</h5>
+              <CodeBlock
+                code={`import { configureAuth } from "@atechhub/firebase";
+
+configureAuth({
+  authUrl: "https://identitytoolkit.googleapis.com/v1/accounts",
+  apiKey: "your-firebase-web-api-key",
+});
+// Or via env vars:
+// NEXT_PUBLIC_FIREBASE_AUTH_URL=https://identitytoolkit.googleapis.com/v1/accounts
+// NEXT_PUBLIC_FIREBASE_API_KEY=your-firebase-web-api-key`}
+                language="javascript"
+              />
+            </div>
+
+            <div>
+              <h5 className="font-semibold mb-2">Use</h5>
+              <CodeBlock
+                code={`import {
+  createUser,
+  changePassword,
+  deleteUser,
+  FirebaseAuthError,
+} from "@atechhub/firebase";
+
+// Register
+const user = await createUser("user@example.com", "securePassword123");
+
+// Change password
+await changePassword(
+  "user@example.com",
+  "currentPassword123",
+  "newSecurePassword456"
+);
+
+// Delete account
+await deleteUser("user@example.com", "currentPassword123");`}
+                language="javascript"
+              />
+            </div>
+
+            <div>
+              <h5 className="font-semibold mb-2">Error handling</h5>
+              <CodeBlock
+                code={`try {
+  await createUser(email, password);
+} catch (error) {
+  if (error instanceof FirebaseAuthError) {
+    // error.code may be 400/401/409/429 etc.
+    console.error("Auth error:", error.message, error.code);
+  }
+}`}
+                language="javascript"
+              />
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: "sdk-auth",
+      title: "SDK Auth",
+      content: (
+        <div className="space-y-6">
+          <div>
+            <h4 className="text-lg font-semibold mb-3">
+              SDK Auth (Email/Password)
+            </h4>
+            <p className="mb-3">
+              Use Firebase Auth SDK with a clean, type-safe interface for
+              email/password authentication.
+            </p>
+
+            <div>
+              <h5 className="font-semibold mb-2">Setup</h5>
+              <CodeBlock
+                code={`import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// Import our auth helper
+import { firebaseAuth } from "@atechhub/firebase";`}
+                language="javascript"
+              />
+            </div>
+
+            <div>
+              <h5 className="font-semibold mb-2">Usage</h5>
+              <CodeBlock
+                code={`import { firebaseAuth } from "@atechhub/firebase";
+
+// 🔐 LOGIN - Sign in existing user
+const userCredential = await firebaseAuth({
+  action: "login",
+  email: "user@example.com",
+  password: "securePassword123",
+});
+
+// 📝 SIGNUP - Create new user
+const newUserCredential = await firebaseAuth({
+  action: "signup",
+  email: "newuser@example.com",
+  password: "securePassword123",
+});
+
+// 🚪 LOGOUT - Sign out current user
+await firebaseAuth({
+  action: "logout",
+});
+
+// 🔄 CHANGE PASSWORD - Update user password
+await firebaseAuth({
+  action: "changePassword",
+  newPassword: "newSecurePassword456",
+});`}
+                language="javascript"
+              />
+            </div>
+
+            <div>
+              <h5 className="font-semibold mb-2">Error Handling</h5>
+              <CodeBlock
+                code={`try {
+  await firebaseAuth({
+    action: "login",
+    email: "user@example.com",
+    password: "wrongPassword",
+  });
+} catch (error) {
+  if (error.code === "auth/user-not-found") {
+    console.error("User does not exist");
+  } else if (error.code === "auth/wrong-password") {
+    console.error("Incorrect password");
+  } else if (error.code === "auth/invalid-email") {
+    console.error("Invalid email format");
+  } else {
+    console.error("Authentication error:", error.message);
+  }
+}`}
+                language="javascript"
+              />
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
       id: "examples",
       title: "Complete Examples",
       content: (
@@ -727,49 +1111,66 @@ function PostsList() {
     },
   ];
 
+  const tabs = [
+    { id: "installation", label: "Installation" },
+    { id: "quick-start", label: "Quick Start" },
+    { id: "database-api", label: "Database API" },
+    { id: "storage-api", label: "Storage API" },
+    { id: "rest-auth", label: "REST Auth" },
+    { id: "sdk-auth", label: "SDK Auth" },
+    { id: "examples", label: "Examples" },
+    { id: "error-handling", label: "Error Handling" },
+    { id: "best-practices", label: "Best Practices" },
+  ];
+
+  const activeSection = sections.find((section) => section.id === activeTab);
+
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          @atechhub/firebase Documentation
-        </h1>
-        <p className="text-lg text-gray-600">
-          A comprehensive Firebase utility package that simplifies Firebase
-          operations for React applications.
-        </p>
-      </div>
+    <div className="max-width-6xl mx-auto">
+      {/* Inject custom styles */}
+      <style dangerouslySetInnerHTML={{ __html: tabStyles }} />
 
-      <div className="space-y-4">
-        {sections.map((section) => {
-          const isExpanded = expandedSections.includes(section.id);
-
-          return (
-            <div key={section.id} className="card">
-              <button
-                onClick={() => toggleSection(section.id)}
-                className="flex items-center justify-between w-full text-left"
-              >
-                <h2 className="text-xl font-semibold text-gray-900">
-                  {section.title}
-                </h2>
-                {isExpanded ? (
-                  <ChevronDown className="h-5 w-5 text-gray-500" />
-                ) : (
-                  <ChevronRight className="h-5 w-5 text-gray-500" />
-                )}
-              </button>
-
-              {isExpanded && (
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                  {section.content}
-                </div>
+      {/* Tab Navigation */}
+      <div className="bg-white rounded-t-xl mb-6 overflow-hidden">
+        <nav className="flex overflow-x-auto scrollbar-hide">
+          {tabs.map((tab, index) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`tab-button relative whitespace-nowrap py-3 px-4 sm:py-4 sm:px-6 font-medium text-xs sm:text-sm transition-all duration-300 ease-in-out ${
+                activeTab === tab.id
+                  ? "text-blue-600 bg-blue-50 tab-glow"
+                  : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+              } ${index === 0 ? "rounded-tl-xl" : ""} ${
+                index === tabs.length - 1 ? "rounded-tr-xl" : ""
+              }`}
+            >
+              <span className="relative z-10">{tab.label}</span>
+              {activeTab === tab.id && (
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 rounded-t-xl opacity-60"></div>
               )}
-            </div>
-          );
-        })}
+              {/* Active indicator */}
+              {activeTab === tab.id && (
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-blue-600"></div>
+              )}
+            </button>
+          ))}
+        </nav>
       </div>
 
-      <div className="mt-8 p-6 bg-blue-50 rounded-lg">
+      {/* Tab Content */}
+      <div className="min-h-[400px] sm:min-h-[600px]">
+        {activeSection && (
+          <div className="prose max-w-none">
+            <div className="bg-white rounded-b-xl p-4 sm:p-8 relative">
+              {/* Content fade-in effect */}
+              <div className="animate-fadeIn">{activeSection.content}</div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl transition-all duration-300">
         <h3 className="text-lg font-semibold text-blue-900 mb-2">
           Ready to try it out?
         </h3>

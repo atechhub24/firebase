@@ -25,20 +25,16 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
   };
 
   return (
-    <div className="relative">
-      {title && (
-        <div className="bg-gray-800 text-white px-4 py-2 text-sm font-medium rounded-t-lg">
-          {title}
-        </div>
-      )}
+    <div className="code-block-container">
+      {title && <div className="code-block-title">{title}</div>}
       <div
-        className={`bg-gray-900 text-gray-100 p-4 overflow-x-auto ${
-          title ? "rounded-b-lg" : "rounded-lg"
-        } relative code-block`}
+        className={`code-block-content ${
+          title ? "with-title" : "without-title"
+        }`}
       >
         <button
           onClick={copyToClipboard}
-          className="absolute top-2 right-2 p-2 bg-gray-700 hover:bg-gray-600 rounded text-gray-300 hover:text-white transition-colors z-10"
+          className="code-block-copy-button"
           title="Copy code"
         >
           {copied ? (
@@ -47,8 +43,8 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
             <Copy className="h-4 w-4" />
           )}
         </button>
-        <pre className="text-sm text-gray-100">
-          <code className={`language-${language} text-gray-100`}>{code}</code>
+        <pre className="code-block-pre">
+          <code className={`code-block-code language-${language}`}>{code}</code>
         </pre>
       </div>
     </div>

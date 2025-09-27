@@ -13,6 +13,7 @@
     "type": "git",
     "url": "https://github.com/atechhub24/firebase.git"
   },
+  "homepage": "https://firebase.atechhub247.com/",
   "license": "MIT",
   "author": "A Tech Hub",
   "type": "module",

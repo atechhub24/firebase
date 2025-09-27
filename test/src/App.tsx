@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FirebaseConfigForm from "./components/FirebaseConfigForm";
 import PlaygroundDashboard from "./components/PlaygroundDashboard";
 import Documentation from "./components/Documentation";
@@ -7,6 +7,25 @@ import "./App.css";
 function App() {
   const [firebaseConfig, setFirebaseConfig] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<"docs" | "playground">("docs");
+  const [packageVersion, setPackageVersion] = useState<string>("loading...");
+
+  useEffect(() => {
+    // Fetch the latest version from npm registry
+    const fetchVersion = async () => {
+      try {
+        const response = await fetch(
+          "https://registry.npmjs.org/@atechhub/firebase/latest"
+        );
+        const data = await response.json();
+        setPackageVersion(`v${data.version}`);
+      } catch (error) {
+        console.error("Failed to fetch package version:", error);
+        setPackageVersion("v0.0.1"); // fallback version
+      }
+    };
+
+    fetchVersion();
+  }, []);
 
   return (
     <div className="app-container">
@@ -19,7 +38,7 @@ function App() {
                   @atechhub/firebase
                 </h1>
                 <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                  v0.0.1
+                  {packageVersion}
                 </span>
               </div>
               <div className="flex items-center space-x-2">

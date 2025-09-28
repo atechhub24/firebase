@@ -1,16 +1,17 @@
 import { getApps } from "firebase/app";
-import { Code, Database, HardDrive, Settings } from "lucide-react";
+import { Code, Database, HardDrive, Settings, Wrench } from "lucide-react";
 import { useEffect, useState } from "react";
 import CodeExamples from "./CodeExamples";
 import DatabasePlayground from "./DatabasePlayground";
 import StoragePlayground from "./StoragePlayground";
+import UtilityPlayground from "./UtilityPlayground";
 
 interface PlaygroundDashboardProps {
   firebaseConfig: any;
   onConfigReset: () => void;
 }
 
-type ActiveTab = "database" | "storage" | "examples";
+type ActiveTab = "database" | "storage" | "utilities" | "examples";
 
 const PlaygroundDashboard: React.FC<PlaygroundDashboardProps> = ({
   firebaseConfig,
@@ -37,6 +38,13 @@ const PlaygroundDashboard: React.FC<PlaygroundDashboardProps> = ({
       name: "Storage",
       icon: HardDrive,
       description: "Test file upload, download, and management",
+    },
+    {
+      id: "utilities" as ActiveTab,
+      name: "Utilities",
+      icon: Wrench,
+      description:
+        "Test utility functions like removeUndefinedFields and generateSystemInfo",
     },
     {
       id: "examples" as ActiveTab,
@@ -151,10 +159,11 @@ const PlaygroundDashboard: React.FC<PlaygroundDashboardProps> = ({
 
       {/* Enhanced Tab Content */}
       <div className="playground-content">
-        {isFirebaseReady ? (
+        {isFirebaseReady || activeTab === "utilities" ? (
           <div className="playground-content-ready">
             {activeTab === "database" && <DatabasePlayground />}
             {activeTab === "storage" && <StoragePlayground />}
+            {activeTab === "utilities" && <UtilityPlayground />}
             {activeTab === "examples" && <CodeExamples />}
           </div>
         ) : (

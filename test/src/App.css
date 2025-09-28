@@ -2944,6 +2944,13 @@ body {
   line-height: 1.4;
 }
 
+/* Execute Button Section in Configuration */
+.database-config-execute {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
 /* Enhanced Results Card */
 .database-results-card {
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
@@ -3005,7 +3012,7 @@ body {
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-bottom: 1rem;
+  margin-bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3047,6 +3054,19 @@ body {
   border-radius: 50%;
   border-top-color: white;
   animation: spin 1s linear infinite;
+}
+
+/* Code and Output Sections */
+.database-code-section {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.database-output-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 /* Enhanced Alert Styles */

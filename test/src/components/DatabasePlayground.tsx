@@ -82,13 +82,13 @@ const DatabasePlayground: React.FC = () => {
       id: "listen" as DatabaseAction,
       name: "Listen",
       icon: RefreshCw,
-      description: "Listen for real-time changes",
+      description: "Basic real-time listening with callbacks",
       needsData: false,
       color: "purple",
     },
   ];
 
-  // Cleanup listener on component unmount
+  // Cleanup listeners on component unmount
   useEffect(() => {
     return () => {
       if (unsubscribeRef.current) {
@@ -266,10 +266,10 @@ const unsubscribe = listen({
         </div>
       </div>
 
-      {/* Enhanced Configuration and Results */}
+      {/* Enhanced Configuration and Code/Results */}
       <div className="database-config-results-grid">
         <div className="database-config-card">
-          <h4 className="database-config-title">Configuration</h4>
+          <h4 className="database-config-title">Configuration & Execute</h4>
 
           <div className="database-config-fields">
             <div className="database-config-field">
@@ -315,11 +315,42 @@ const unsubscribe = listen({
               </div>
             )}
           </div>
+
+          {/* Execute Button moved to Configuration section */}
+          <div className="database-config-execute">
+            <button
+              onClick={executeAction}
+              disabled={loading}
+              className={`database-execute-button ${
+                selectedAction === "delete"
+                  ? "database-execute-button-danger"
+                  : ""
+              }`}
+            >
+              {loading ? (
+                <>
+                  <div className="database-loading-spinner" />
+                  Executing...
+                </>
+              ) : (
+                <>
+                  <Play className="database-execute-icon" />
+                  {selectedAction === "listen"
+                    ? isListening
+                      ? "Stop Listening"
+                      : "Start Listening"
+                    : `Execute ${
+                        actions.find((a) => a.id === selectedAction)?.name
+                      }`}
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         <div className="database-results-card">
           <div className="database-results-header">
-            <h4 className="database-results-title">Execute & Results</h4>
+            <h4 className="database-results-title">Code & Output</h4>
             <button
               onClick={() => setShowCode(!showCode)}
               className="database-code-toggle"
@@ -329,36 +360,9 @@ const unsubscribe = listen({
             </button>
           </div>
 
-          <button
-            onClick={executeAction}
-            disabled={loading}
-            className={`database-execute-button ${
-              selectedAction === "delete"
-                ? "database-execute-button-danger"
-                : ""
-            }`}
-          >
-            {loading ? (
-              <>
-                <div className="database-loading-spinner" />
-                Executing...
-              </>
-            ) : (
-              <>
-                <Play className="database-execute-icon" />
-                {selectedAction === "listen"
-                  ? isListening
-                    ? "Stop Listening"
-                    : "Start Listening"
-                  : `Execute ${
-                      actions.find((a) => a.id === selectedAction)?.name
-                    }`}
-              </>
-            )}
-          </button>
-
+          {/* Code Section */}
           {showCode && (
-            <div className="mb-4">
+            <div className="database-code-section">
               <CodeBlock
                 code={generateCodeExample()}
                 language="javascript"
@@ -367,52 +371,55 @@ const unsubscribe = listen({
             </div>
           )}
 
-          {error && (
-            <div className="database-alert database-alert-error">
-              <AlertCircle className="database-alert-icon" />
-              <div className="database-alert-content">{error}</div>
-            </div>
-          )}
+          {/* Results Section */}
+          <div className="database-output-section">
+            {error && (
+              <div className="database-alert database-alert-error">
+                <AlertCircle className="database-alert-icon" />
+                <div className="database-alert-content">{error}</div>
+              </div>
+            )}
 
-          {result !== null && (
-            <div className="database-alert database-alert-success">
-              <CheckCircle className="database-alert-icon" />
-              <div className="database-alert-content">
-                Operation completed successfully
-                <div className="database-result-container">
-                  <div className="database-result-wrapper">
-                    <div className="database-result-header">
-                      <h5 className="database-result-title">Result:</h5>
-                      <button
-                        onClick={() =>
-                          navigator.clipboard.writeText(
-                            typeof result === "string"
-                              ? result
-                              : JSON.stringify(result, null, 2)
-                          )
-                        }
-                        className="database-result-copy"
-                        title="Copy result"
-                      >
-                        Copy
-                      </button>
-                    </div>
-                    <div className="database-result-content">
-                      <pre className="database-result-pre">
-                        {typeof result === "string"
-                          ? result || "(empty string)"
-                          : result === null
-                          ? "null"
-                          : result === undefined
-                          ? "undefined"
-                          : JSON.stringify(result, null, 2)}
-                      </pre>
+            {result !== null && (
+              <div className="database-alert database-alert-success">
+                <CheckCircle className="database-alert-icon" />
+                <div className="database-alert-content">
+                  Operation completed successfully
+                  <div className="database-result-container">
+                    <div className="database-result-wrapper">
+                      <div className="database-result-header">
+                        <h5 className="database-result-title">Output:</h5>
+                        <button
+                          onClick={() =>
+                            navigator.clipboard.writeText(
+                              typeof result === "string"
+                                ? result
+                                : JSON.stringify(result, null, 2)
+                            )
+                          }
+                          className="database-result-copy"
+                          title="Copy result"
+                        >
+                          Copy
+                        </button>
+                      </div>
+                      <div className="database-result-content">
+                        <pre className="database-result-pre">
+                          {typeof result === "string"
+                            ? result || "(empty string)"
+                            : result === null
+                            ? "null"
+                            : result === undefined
+                            ? "undefined"
+                            : JSON.stringify(result, null, 2)}
+                        </pre>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 

@@ -2703,164 +2703,238 @@ body {
   letter-spacing: -0.025em;
 }
 
-.database-operations-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-  margin-bottom: 1rem;
+/* Database Operations Tab Navigation */
+.database-operations-tabs {
+  margin-bottom: 1.5rem;
 }
 
-@media (min-width: 1024px) {
-  .database-operations-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-.database-operation-button {
-  padding: 0.75rem;
+.database-operations-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   border-radius: 0.75rem;
-  border: 2px solid;
-  text-align: left;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
+  border: 1px solid #e2e8f0;
+}
+
+.database-operation-tab {
+  flex: 1;
+  min-width: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
   background: white;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
 }
 
-.database-operation-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+.database-operation-tab:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.database-operation-button-content {
+.database-operation-tab-content {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  margin-bottom: 0.25rem;
   position: relative;
   z-index: 2;
 }
 
-.database-operation-icon {
-  width: 1rem;
-  height: 1rem;
-  transition: transform 0.3s ease;
-}
 
-.database-operation-button:hover .database-operation-icon {
+.database-operation-tab:hover .database-operation-tab-icon {
   transform: scale(1.1);
 }
 
-.database-operation-name {
+.database-operation-tab-name {
   font-weight: 500;
   font-size: 0.875rem;
   transition: color 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #6b7280;
 }
 
-.database-operation-description {
-  font-size: 0.75rem;
-  opacity: 0.75;
-  line-height: 1.4;
-  position: relative;
-  z-index: 2;
+.database-operation-tab-icon {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 0.3s ease;
+  color: #9ca3af;
 }
 
-/* Color variants for operation buttons */
-.database-operation-button-blue {
-  border-color: #bfdbfe;
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+/* Tab Color Variants */
+.database-operation-tab-blue {
+  border-color: #e2e8f0;
 }
 
-.database-operation-button-blue.selected {
-  border-color: #3b82f6;
+.database-operation-tab-blue.active {
   background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.database-operation-button-blue .database-operation-name {
+.database-operation-tab-blue .database-operation-tab-name {
   color: #1e40af;
 }
 
-.database-operation-button-blue .database-operation-description {
-  color: #2563eb;
+.database-operation-tab-blue .database-operation-tab-icon {
+  color: #3b82f6;
 }
 
-.database-operation-button-green {
-  border-color: #bbf7d0;
-  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+.database-operation-tab-green {
+  border-color: #e2e8f0;
 }
 
-.database-operation-button-green.selected {
-  border-color: #22c55e;
+.database-operation-tab-green.active {
   background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
 }
 
-.database-operation-button-green .database-operation-name {
+.database-operation-tab-green .database-operation-tab-name {
   color: #166534;
 }
 
-.database-operation-button-green .database-operation-description {
-  color: #15803d;
+.database-operation-tab-green .database-operation-tab-icon {
+  color: #22c55e;
 }
 
-.database-operation-button-yellow {
-  border-color: #fde68a;
-  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+.database-operation-tab-yellow {
+  border-color: #e2e8f0;
 }
 
-.database-operation-button-yellow.selected {
-  border-color: #f59e0b;
+.database-operation-tab-yellow.active {
   background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
 }
 
-.database-operation-button-yellow .database-operation-name {
+.database-operation-tab-yellow .database-operation-tab-name {
   color: #92400e;
 }
 
-.database-operation-button-yellow .database-operation-description {
-  color: #a16207;
+.database-operation-tab-yellow .database-operation-tab-icon {
+  color: #f59e0b;
 }
 
-.database-operation-button-red {
-  border-color: #fecaca;
-  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+.database-operation-tab-red {
+  border-color: #e2e8f0;
 }
 
-.database-operation-button-red.selected {
-  border-color: #ef4444;
+.database-operation-tab-red.active {
   background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
-.database-operation-button-red .database-operation-name {
+.database-operation-tab-red .database-operation-tab-name {
   color: #991b1b;
 }
 
-.database-operation-button-red .database-operation-description {
-  color: #b91c1c;
+.database-operation-tab-red .database-operation-tab-icon {
+  color: #ef4444;
 }
 
-.database-operation-button-purple {
-  border-color: #e9d5ff;
-  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+.database-operation-tab-purple {
+  border-color: #e2e8f0;
 }
 
-.database-operation-button-purple.selected {
-  border-color: #a855f7;
+.database-operation-tab-purple.active {
   background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
-  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1);
+  border-color: #a855f7;
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
 }
 
-.database-operation-button-purple .database-operation-name {
+.database-operation-tab-purple .database-operation-tab-name {
   color: #6b21a8;
 }
 
-.database-operation-button-purple .database-operation-description {
-  color: #7c3aed;
+.database-operation-tab-purple .database-operation-tab-icon {
+  color: #a855f7;
 }
+
+/* Active Operation Description Card */
+.database-operation-description-card {
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.database-operation-description-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.database-operation-description-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.database-operation-description-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: color 0.3s ease;
+}
+
+.database-operation-description-icon-blue {
+  color: #3b82f6;
+}
+
+.database-operation-description-icon-green {
+  color: #22c55e;
+}
+
+.database-operation-description-icon-yellow {
+  color: #f59e0b;
+}
+
+.database-operation-description-icon-red {
+  color: #ef4444;
+}
+
+.database-operation-description-icon-purple {
+  color: #a855f7;
+}
+
+.database-operation-description-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+}
+
+.database-operation-description-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .database-operations-nav {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .database-operation-tab {
+    flex: none;
+  }
+  
+  .database-operation-tab-content {
+    justify-content: flex-start;
+  }
+}
+
 
 /* Enhanced Configuration and Results Cards */
 .database-config-results-grid {

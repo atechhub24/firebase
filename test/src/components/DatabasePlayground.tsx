@@ -233,36 +233,65 @@ const unsubscribe = listen({
 
   return (
     <div className="database-playground-container">
-      {/* Enhanced Action Selection */}
+      {/* Enhanced Action Selection with Tab View */}
       <div className="database-operations-card">
         <div className="database-operations-header">
           <Database className="database-operations-icon" />
           <h3 className="database-operations-title">Database Operations</h3>
         </div>
 
-        <div className="database-operations-grid">
-          {actions.map((action) => {
-            const Icon = action.icon;
-            const isSelected = selectedAction === action.id;
+        {/* Tab Navigation */}
+        <div className="database-operations-tabs">
+          <nav className="database-operations-nav">
+            {actions.map((action) => {
+              const Icon = action.icon;
+              const isSelected = selectedAction === action.id;
 
-            return (
-              <button
-                key={action.id}
-                onClick={() => setSelectedAction(action.id)}
-                className={`database-operation-button database-operation-button-${
-                  action.color
-                } ${isSelected ? "selected" : ""}`}
-              >
-                <div className="database-operation-button-content">
-                  <Icon className="database-operation-icon" />
-                  <span className="database-operation-name">{action.name}</span>
-                </div>
-                <p className="database-operation-description">
-                  {action.description}
-                </p>
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={action.id}
+                  onClick={() => setSelectedAction(action.id)}
+                  className={`database-operation-tab database-operation-tab-${
+                    action.color
+                  } ${isSelected ? "active" : ""}`}
+                >
+                  <div className="database-operation-tab-content">
+                    <Icon className="database-operation-tab-icon" />
+                    <span className="database-operation-tab-name">
+                      {action.name}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Active Operation Description */}
+        <div className="database-operation-description-card">
+          <div className="database-operation-description-content">
+            {(() => {
+              const activeAction = actions.find((a) => a.id === selectedAction);
+              const Icon = activeAction?.icon || Database;
+              return (
+                <>
+                  <div className="database-operation-description-header">
+                    <Icon
+                      className={`database-operation-description-icon database-operation-description-icon-${
+                        activeAction?.color || "blue"
+                      }`}
+                    />
+                    <h4 className="database-operation-description-title">
+                      {activeAction?.name}
+                    </h4>
+                  </div>
+                  <p className="database-operation-description-text">
+                    {activeAction?.description}
+                  </p>
+                </>
+              );
+            })()}
+          </div>
         </div>
       </div>
 

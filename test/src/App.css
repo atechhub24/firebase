@@ -4357,6 +4357,9 @@ body {
   border: 2px solid #e5e7eb;
   border-radius: 0.75rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .firebase-config-input:focus {

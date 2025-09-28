@@ -261,15 +261,21 @@ const FirebaseConfigForm: React.FC<FirebaseConfigFormProps> = ({
       <div className="firebase-config-wrapper">
         {/* Enhanced Header Section */}
         <div className="firebase-config-header">
-          <div className="firebase-config-icon-container">
-            <Settings className="firebase-config-icon" />
+          <div className="firebase-config-header-content">
+            <img
+              src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-original.svg"
+              alt="Firebase"
+              className="firebase-config-header-icon"
+            />
+            <div className="firebase-config-header-text">
+              <h1 className="firebase-config-title">Firebase Configuration</h1>
+              <p className="firebase-config-description">
+                Enter your Firebase configuration to unlock the full potential
+                of our playground features. Your config is stored locally and
+                never transmitted to external servers.
+              </p>
+            </div>
           </div>
-          <h1 className="firebase-config-title">Firebase Configuration</h1>
-          <p className="firebase-config-description">
-            Enter your Firebase configuration to unlock the full potential of
-            our playground features. Your config is stored locally and never
-            transmitted to external servers.
-          </p>
         </div>
 
         {/* Main Configuration Card */}

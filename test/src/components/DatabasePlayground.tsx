@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { mutate } from "@atechhub/firebase";
+import { useState, useEffect, useRef } from "react";
+import { mutate, listen } from "@atechhub/firebase";
 import { getApps } from "firebase/app";
 import {
   Plus,
@@ -21,7 +21,7 @@ type DatabaseAction =
   | "delete"
   | "createWithId"
   | "get"
-  | "onValue";
+  | "listen";
 
 const DatabasePlayground: React.FC = () => {
   const [selectedAction, setSelectedAction] = useState<DatabaseAction>("get");
@@ -34,6 +34,8 @@ const DatabasePlayground: React.FC = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showCode, setShowCode] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const unsubscribeRef = useRef<(() => void) | null>(null);
 
   const actions = [
     {
@@ -77,7 +79,7 @@ const DatabasePlayground: React.FC = () => {
       color: "red",
     },
     {
-      id: "onValue" as DatabaseAction,
+      id: "listen" as DatabaseAction,
       name: "Listen",
       icon: RefreshCw,
       description: "Listen for real-time changes",
@@ -85,6 +87,15 @@ const DatabasePlayground: React.FC = () => {
       color: "purple",
     },
   ];
+
+  // Cleanup listener on component unmount
+  useEffect(() => {
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+      }
+    };
+  }, []);
 
   const executeAction = async () => {
     setError("");
@@ -98,6 +109,39 @@ const DatabasePlayground: React.FC = () => {
         throw new Error(
           "Firebase not initialized. Please check your configuration and try again."
         );
+      }
+
+      // Handle real-time listening separately
+      if (selectedAction === "listen") {
+        if (isListening) {
+          // Stop listening
+          if (unsubscribeRef.current) {
+            unsubscribeRef.current();
+            unsubscribeRef.current = null;
+          }
+          setIsListening(false);
+          setResult("Stopped listening to real-time changes");
+        } else {
+          // Start listening
+          const unsubscribe = listen({
+            path,
+            onData: (data: any) => {
+              setResult(
+                `Real-time data updated: ${JSON.stringify(data, null, 2)}`
+              );
+            },
+            onError: (error: Error) => {
+              setError(`Real-time listener error: ${error.message}`);
+              setIsListening(false);
+            },
+          });
+
+          unsubscribeRef.current = unsubscribe;
+          setIsListening(true);
+          setResult("Started listening for real-time changes...");
+        }
+        setLoading(false);
+        return;
       }
 
       let parsedData = {};
@@ -146,6 +190,26 @@ const DatabasePlayground: React.FC = () => {
 
   const generateCodeExample = () => {
     const actionConfig = actions.find((a) => a.id === selectedAction);
+
+    if (selectedAction === "listen") {
+      return `import { listen } from '@atechhub/firebase';
+
+// Start listening for real-time changes
+const unsubscribe = listen({
+  path: '${path}',
+  onData: (data) => {
+    console.log('Real-time data:', data);
+    // Handle real-time updates here
+  },
+  onError: (error) => {
+    console.error('Listen error:', error);
+  }
+});
+
+// Stop listening when done
+// unsubscribe();`;
+    }
+
     let codeExample = `import { mutate } from '@atechhub/firebase';\n\n`;
 
     if (actionConfig?.needsData) {
@@ -282,7 +346,13 @@ const DatabasePlayground: React.FC = () => {
             ) : (
               <>
                 <Play className="database-execute-icon" />
-                Execute {actions.find((a) => a.id === selectedAction)?.name}
+                {selectedAction === "listen"
+                  ? isListening
+                    ? "Stop Listening"
+                    : "Start Listening"
+                  : `Execute ${
+                      actions.find((a) => a.id === selectedAction)?.name
+                    }`}
               </>
             )}
           </button>

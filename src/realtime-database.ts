@@ -68,8 +68,14 @@ export const generateSystemInfo = (actionBy: string) => {
 export type MutateData = {
   path: string;
   data?: Record<string, unknown>;
-  action: "create" | "update" | "delete" | "createWithId" | "get" | "onValue";
+  action: "create" | "update" | "delete" | "createWithId" | "get";
   actionBy?: string;
+};
+
+export type ListenOptions = {
+  path: string;
+  onData: (data: any) => void;
+  onError?: (error: Error) => void;
 };
 
 export async function mutate({
@@ -125,13 +131,76 @@ export async function mutate({
       const snapshot = await get(dbRef);
       return snapshot.val();
     }
-    case "onValue": {
-      const unsubscribe = onValue(dbRef, (snapshot) => {
-        return snapshot.val();
-      });
-      return unsubscribe;
-    }
     default:
       throw new Error("Invalid action type");
   }
+}
+
+/**
+ * Listen to real-time changes at a database path
+ * @param options - Configuration object with path, onData callback, and optional onError callback
+ * @returns Unsubscribe function to stop listening
+ */
+export function listen({ path, onData, onError }: ListenOptions) {
+  if (getApps().length === 0) {
+    throw new Error("Firebase not initialized");
+  }
+
+  const app = getApp();
+  const db = getDatabase(app);
+  const dbRef = ref(db, path);
+
+  const unsubscribe = onValue(
+    dbRef,
+    (snapshot) => {
+      const data = snapshot.val();
+      onData(data);
+    },
+    (error) => {
+      if (onError) {
+        onError(error);
+      } else {
+        console.error("Database listen error:", error);
+      }
+    }
+  );
+
+  return unsubscribe;
+}
+
+/**
+ * Listen to real-time changes with automatic cleanup
+ * @param options - Configuration object with path and callbacks
+ * @returns Object with unsubscribe function and current data
+ */
+export function useRealtimeData({ path, onData, onError }: ListenOptions) {
+  if (getApps().length === 0) {
+    throw new Error("Firebase not initialized");
+  }
+
+  const app = getApp();
+  const db = getDatabase(app);
+  const dbRef = ref(db, path);
+
+  let currentData: any = null;
+
+  const unsubscribe = onValue(
+    dbRef,
+    (snapshot) => {
+      currentData = snapshot.val();
+      onData(currentData);
+    },
+    (error) => {
+      if (onError) {
+        onError(error);
+      } else {
+        console.error("Database listen error:", error);
+      }
+    }
+  );
+
+  return {
+    unsubscribe,
+    getCurrentData: () => currentData,
+  };
 }

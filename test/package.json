@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@atechhub/firebase": "^0.0.1",
+    "@atechhub/firebase": "^0.0.5",
     "firebase": "^12.2.1",
     "lucide-react": "^0.469.0",
     "prism-react-renderer": "^2.4.0",

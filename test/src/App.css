@@ -4286,16 +4286,22 @@ body {
 
 .firebase-config-form-section {
   animation: fadeIn 0.3s ease-out;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .firebase-config-fields-grid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .firebase-config-field-full {
-  grid-column: span 2 / span 2;
+  grid-column: span 1 / span 1;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .firebase-config-field-label {
@@ -4348,6 +4354,8 @@ body {
 
 .firebase-config-input-wrapper {
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .firebase-config-input {
@@ -4577,6 +4585,10 @@ body {
   
   .firebase-config-fields-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .firebase-config-field-full {
+    grid-column: span 2 / span 2;
   }
   
   .firebase-config-help-grid {

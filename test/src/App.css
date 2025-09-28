@@ -2653,6 +2653,619 @@ body {
   }
 }
 
+/* Enhanced Database Playground Styles */
+.database-playground-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 100%;
+}
+
+.database-operations-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.02);
+  position: relative;
+  overflow: hidden;
+}
+
+.database-operations-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 50%, #7c3aed 100%);
+}
+
+.database-operations-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.database-operations-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #3b82f6;
+  filter: drop-shadow(0 1px 2px rgba(59, 130, 246, 0.3));
+}
+
+.database-operations-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+.database-operations-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .database-operations-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.database-operation-button {
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 2px solid;
+  text-align: left;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.database-operation-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.database-operation-button-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+  position: relative;
+  z-index: 2;
+}
+
+.database-operation-icon {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.database-operation-button:hover .database-operation-icon {
+  transform: scale(1.1);
+}
+
+.database-operation-name {
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: color 0.3s ease;
+}
+
+.database-operation-description {
+  font-size: 0.75rem;
+  opacity: 0.75;
+  line-height: 1.4;
+  position: relative;
+  z-index: 2;
+}
+
+/* Color variants for operation buttons */
+.database-operation-button-blue {
+  border-color: #bfdbfe;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+}
+
+.database-operation-button-blue.selected {
+  border-color: #3b82f6;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.database-operation-button-blue .database-operation-name {
+  color: #1e40af;
+}
+
+.database-operation-button-blue .database-operation-description {
+  color: #2563eb;
+}
+
+.database-operation-button-green {
+  border-color: #bbf7d0;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+}
+
+.database-operation-button-green.selected {
+  border-color: #22c55e;
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+}
+
+.database-operation-button-green .database-operation-name {
+  color: #166534;
+}
+
+.database-operation-button-green .database-operation-description {
+  color: #15803d;
+}
+
+.database-operation-button-yellow {
+  border-color: #fde68a;
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+}
+
+.database-operation-button-yellow.selected {
+  border-color: #f59e0b;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+}
+
+.database-operation-button-yellow .database-operation-name {
+  color: #92400e;
+}
+
+.database-operation-button-yellow .database-operation-description {
+  color: #a16207;
+}
+
+.database-operation-button-red {
+  border-color: #fecaca;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+}
+
+.database-operation-button-red.selected {
+  border-color: #ef4444;
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+.database-operation-button-red .database-operation-name {
+  color: #991b1b;
+}
+
+.database-operation-button-red .database-operation-description {
+  color: #b91c1c;
+}
+
+.database-operation-button-purple {
+  border-color: #e9d5ff;
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+}
+
+.database-operation-button-purple.selected {
+  border-color: #a855f7;
+  background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1);
+}
+
+.database-operation-button-purple .database-operation-name {
+  color: #6b21a8;
+}
+
+.database-operation-button-purple .database-operation-description {
+  color: #7c3aed;
+}
+
+/* Enhanced Configuration and Results Cards */
+.database-config-results-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .database-config-results-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.database-config-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.02);
+  height: fit-content;
+}
+
+.database-config-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.025em;
+}
+
+.database-config-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.database-config-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.database-config-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  letter-spacing: -0.025em;
+}
+
+.database-config-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  color: #374151;
+  background: white;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+}
+
+.database-config-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  transform: translateY(-1px);
+}
+
+.database-config-textarea {
+  resize: vertical;
+  min-height: 6rem;
+  font-family: var(--font-mono);
+  line-height: 1.5;
+}
+
+.database-config-hint {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+  line-height: 1.4;
+}
+
+/* Enhanced Results Card */
+.database-results-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.database-results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.database-results-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+.database-code-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.database-code-toggle:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  transform: translateY(-1px);
+}
+
+.database-code-toggle-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.database-execute-button {
+  width: 100%;
+  padding: 0.875rem 1.25rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border: none;
+  border-radius: 0.75rem;
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.database-execute-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+
+.database-execute-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.database-execute-button-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.database-execute-button-danger:hover:not(:disabled) {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+.database-execute-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.database-loading-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+/* Enhanced Alert Styles */
+.database-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  position: relative;
+  overflow: hidden;
+}
+
+.database-alert::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+
+.database-alert-success {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border: 1px solid #bbf7d0;
+  color: #166534;
+}
+
+.database-alert-success::before {
+  background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+}
+
+.database-alert-error {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.database-alert-error::before {
+  background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+}
+
+.database-alert-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.database-alert-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Enhanced Result Display */
+.database-result-container {
+  margin-top: 0.75rem;
+}
+
+.database-result-wrapper {
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+.database-result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.database-result-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.database-result-copy {
+  font-size: 0.75rem;
+  color: #2563eb;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.database-result-copy:hover {
+  color: #1d4ed8;
+}
+
+.database-result-content {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  max-height: 16rem;
+  overflow-y: auto;
+}
+
+.database-result-pre {
+  font-size: 0.875rem;
+  color: #111827;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+  font-family: var(--font-mono);
+  line-height: 1.5;
+}
+
+/* Enhanced Quick Examples */
+.database-examples-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.database-examples-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.025em;
+}
+
+.database-examples-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .database-examples-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.database-example-button {
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.database-example-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.database-example-button-green {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-color: #bbf7d0;
+}
+
+.database-example-button-blue {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-color: #bfdbfe;
+}
+
+.database-example-button-purple {
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  border-color: #e9d5ff;
+}
+
+.database-example-button-yellow {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border-color: #fde68a;
+}
+
+.database-example-title {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.database-example-title-green {
+  color: #166534;
+}
+
+.database-example-title-blue {
+  color: #1e40af;
+}
+
+.database-example-title-purple {
+  color: #6b21a8;
+}
+
+.database-example-title-yellow {
+  color: #92400e;
+}
+
+.database-example-description {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.database-example-description-green {
+  color: #15803d;
+}
+
+.database-example-description-blue {
+  color: #2563eb;
+}
+
+.database-example-description-purple {
+  color: #7c3aed;
+}
+
+.database-example-description-yellow {
+  color: #a16207;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .playground-header-content {

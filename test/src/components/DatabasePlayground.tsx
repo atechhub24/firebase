@@ -167,27 +167,16 @@ const DatabasePlayground: React.FC = () => {
     return codeExample;
   };
 
-  const getColorClasses = (color: string) => {
-    const colors = {
-      blue: "bg-blue-100 text-blue-800 border-blue-200",
-      green: "bg-green-100 text-green-800 border-green-200",
-      yellow: "bg-yellow-100 text-yellow-800 border-yellow-200",
-      red: "bg-red-100 text-red-800 border-red-200",
-      purple: "bg-purple-100 text-purple-800 border-purple-200",
-    };
-    return colors[color as keyof typeof colors] || colors.blue;
-  };
-
   return (
-    <div className="space-y-6">
-      {/* Action Selection */}
-      <div className="card">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-          <Database className="h-5 w-5 mr-2" />
-          Database Operations
-        </h3>
+    <div className="database-playground-container">
+      {/* Enhanced Action Selection */}
+      <div className="database-operations-card">
+        <div className="database-operations-header">
+          <Database className="database-operations-icon" />
+          <h3 className="database-operations-title">Database Operations</h3>
+        </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+        <div className="database-operations-grid">
           {actions.map((action) => {
             const Icon = action.icon;
             const isSelected = selectedAction === action.id;
@@ -196,71 +185,67 @@ const DatabasePlayground: React.FC = () => {
               <button
                 key={action.id}
                 onClick={() => setSelectedAction(action.id)}
-                className={`p-3 rounded-lg border-2 text-left transition-all ${
-                  isSelected
-                    ? getColorClasses(action.color)
-                    : "bg-white border-gray-200 hover:border-gray-300"
-                }`}
+                className={`database-operation-button database-operation-button-${
+                  action.color
+                } ${isSelected ? "selected" : ""}`}
               >
-                <div className="flex items-center space-x-2 mb-1">
-                  <Icon className="h-4 w-4" />
-                  <span className="font-medium text-sm">{action.name}</span>
+                <div className="database-operation-button-content">
+                  <Icon className="database-operation-icon" />
+                  <span className="database-operation-name">{action.name}</span>
                 </div>
-                <p className="text-xs opacity-75">{action.description}</p>
+                <p className="database-operation-description">
+                  {action.description}
+                </p>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Configuration */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="card">
-          <h4 className="font-semibold text-gray-900 mb-4">Configuration</h4>
+      {/* Enhanced Configuration and Results */}
+      <div className="database-config-results-grid">
+        <div className="database-config-card">
+          <h4 className="database-config-title">Configuration</h4>
 
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Database Path
-              </label>
+          <div className="database-config-fields">
+            <div className="database-config-field">
+              <label className="database-config-label">Database Path</label>
               <input
                 type="text"
                 value={path}
                 onChange={(e) => setPath(e.target.value)}
-                className="input"
+                className="database-config-input"
                 placeholder="e.g., users/123 or posts"
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="database-config-hint">
                 Firebase Realtime Database path
               </p>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="database-config-field">
+              <label className="database-config-label">
                 Action By (User ID)
               </label>
               <input
                 type="text"
                 value={actionBy}
                 onChange={(e) => setActionBy(e.target.value)}
-                className="input"
+                className="database-config-input"
                 placeholder="user-123"
               />
             </div>
 
             {actions.find((a) => a.id === selectedAction)?.needsData && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Data (JSON)
-                </label>
+              <div className="database-config-field">
+                <label className="database-config-label">Data (JSON)</label>
                 <textarea
                   value={data}
                   onChange={(e) => setData(e.target.value)}
-                  className="input textarea"
+                  className="database-config-input database-config-textarea"
                   rows={6}
                   placeholder='{"key": "value"}'
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="database-config-hint">
                   Valid JSON object to send
                 </p>
               </div>
@@ -268,14 +253,14 @@ const DatabasePlayground: React.FC = () => {
           </div>
         </div>
 
-        <div className="card">
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="font-semibold text-gray-900">Execute & Results</h4>
+        <div className="database-results-card">
+          <div className="database-results-header">
+            <h4 className="database-results-title">Execute & Results</h4>
             <button
               onClick={() => setShowCode(!showCode)}
-              className="btn btn-secondary text-xs"
+              className="database-code-toggle"
             >
-              <Code className="h-3 w-3 mr-1" />
+              <Code className="database-code-toggle-icon" />
               {showCode ? "Hide" : "Show"} Code
             </button>
           </div>
@@ -283,18 +268,20 @@ const DatabasePlayground: React.FC = () => {
           <button
             onClick={executeAction}
             disabled={loading}
-            className={`btn w-full mb-4 ${
-              selectedAction === "delete" ? "btn-danger" : "btn-primary"
+            className={`database-execute-button ${
+              selectedAction === "delete"
+                ? "database-execute-button-danger"
+                : ""
             }`}
           >
             {loading ? (
               <>
-                <div className="loading-spinner mr-2" />
+                <div className="database-loading-spinner" />
                 Executing...
               </>
             ) : (
               <>
-                <Play className="h-4 w-4 mr-2" />
+                <Play className="database-execute-icon" />
                 Execute {actions.find((a) => a.id === selectedAction)?.name}
               </>
             )}
@@ -311,46 +298,46 @@ const DatabasePlayground: React.FC = () => {
           )}
 
           {error && (
-            <div className="alert alert-error">
-              <AlertCircle className="h-4 w-4 mr-2 inline" />
-              {error}
+            <div className="database-alert database-alert-error">
+              <AlertCircle className="database-alert-icon" />
+              <div className="database-alert-content">{error}</div>
             </div>
           )}
 
           {result !== null && (
-            <div className="alert alert-success">
-              <CheckCircle className="h-4 w-4 mr-2 inline" />
-              Operation completed successfully
-              <div className="mt-3">
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h5 className="text-sm font-semibold text-gray-700">
-                      Result:
-                    </h5>
-                    <button
-                      onClick={() =>
-                        navigator.clipboard.writeText(
-                          typeof result === "string"
-                            ? result
-                            : JSON.stringify(result, null, 2)
-                        )
-                      }
-                      className="text-xs text-blue-600 hover:text-blue-800"
-                      title="Copy result"
-                    >
-                      Copy
-                    </button>
-                  </div>
-                  <div className="bg-white border rounded p-3 max-h-64 overflow-y-auto">
-                    <pre className="text-sm text-gray-900 whitespace-pre-wrap break-words">
-                      {typeof result === "string"
-                        ? result || "(empty string)"
-                        : result === null
-                        ? "null"
-                        : result === undefined
-                        ? "undefined"
-                        : JSON.stringify(result, null, 2)}
-                    </pre>
+            <div className="database-alert database-alert-success">
+              <CheckCircle className="database-alert-icon" />
+              <div className="database-alert-content">
+                Operation completed successfully
+                <div className="database-result-container">
+                  <div className="database-result-wrapper">
+                    <div className="database-result-header">
+                      <h5 className="database-result-title">Result:</h5>
+                      <button
+                        onClick={() =>
+                          navigator.clipboard.writeText(
+                            typeof result === "string"
+                              ? result
+                              : JSON.stringify(result, null, 2)
+                          )
+                        }
+                        className="database-result-copy"
+                        title="Copy result"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <div className="database-result-content">
+                      <pre className="database-result-pre">
+                        {typeof result === "string"
+                          ? result || "(empty string)"
+                          : result === null
+                          ? "null"
+                          : result === undefined
+                          ? "undefined"
+                          : JSON.stringify(result, null, 2)}
+                      </pre>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -359,11 +346,11 @@ const DatabasePlayground: React.FC = () => {
         </div>
       </div>
 
-      {/* Quick Examples */}
-      <div className="card">
-        <h4 className="font-semibold text-gray-900 mb-4">Quick Examples</h4>
+      {/* Enhanced Quick Examples */}
+      <div className="database-examples-card">
+        <h4 className="database-examples-title">Quick Examples</h4>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="database-examples-grid">
           <button
             onClick={() => {
               setSelectedAction("create");
@@ -372,10 +359,12 @@ const DatabasePlayground: React.FC = () => {
                 '{\n  "name": "John Doe",\n  "email": "john@example.com",\n  "age": 30\n}'
               );
             }}
-            className="p-3 bg-green-50 border border-green-200 rounded-lg text-left hover:bg-green-100 transition-colors"
+            className="database-example-button database-example-button-green"
           >
-            <div className="font-medium text-green-800 mb-1">Create User</div>
-            <div className="text-sm text-green-600">
+            <div className="database-example-title database-example-title-green">
+              Create User
+            </div>
+            <div className="database-example-description database-example-description-green">
               Create a user record with profile data
             </div>
           </button>
@@ -388,10 +377,12 @@ const DatabasePlayground: React.FC = () => {
                 '{\n  "title": "My First Post",\n  "content": "Hello World!",\n  "published": true\n}'
               );
             }}
-            className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-left hover:bg-blue-100 transition-colors"
+            className="database-example-button database-example-button-blue"
           >
-            <div className="font-medium text-blue-800 mb-1">Create Post</div>
-            <div className="text-sm text-blue-600">
+            <div className="database-example-title database-example-title-blue">
+              Create Post
+            </div>
+            <div className="database-example-description database-example-description-blue">
               Create a post with auto-generated ID
             </div>
           </button>
@@ -401,12 +392,12 @@ const DatabasePlayground: React.FC = () => {
               setSelectedAction("get");
               setPath("playground/users");
             }}
-            className="p-3 bg-purple-50 border border-purple-200 rounded-lg text-left hover:bg-purple-100 transition-colors"
+            className="database-example-button database-example-button-purple"
           >
-            <div className="font-medium text-purple-800 mb-1">
+            <div className="database-example-title database-example-title-purple">
               Get All Users
             </div>
-            <div className="text-sm text-purple-600">
+            <div className="database-example-description database-example-description-purple">
               Retrieve all user records
             </div>
           </button>
@@ -419,10 +410,12 @@ const DatabasePlayground: React.FC = () => {
                 '{\n  "lastLogin": "2024-01-15T10:30:00.000Z",\n  "isActive": true\n}'
               );
             }}
-            className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-left hover:bg-yellow-100 transition-colors"
+            className="database-example-button database-example-button-yellow"
           >
-            <div className="font-medium text-yellow-800 mb-1">Update User</div>
-            <div className="text-sm text-yellow-600">
+            <div className="database-example-title database-example-title-yellow">
+              Update User
+            </div>
+            <div className="database-example-description database-example-description-yellow">
               Update user login status
             </div>
           </button>

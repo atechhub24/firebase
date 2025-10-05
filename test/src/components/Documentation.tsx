@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import CodeBlock from "./CodeBlock";
 import NextJsExample from "./NextJsExample";
 import FrameworkSelector from "./FrameworkSelector";
+import ConfigConverter from "./ConfigConverter";
 
 const PackageManagerTabs: React.FC = () => {
   const [activePm, setActivePm] = useState<string>("npm");
@@ -836,6 +837,19 @@ function PostsList() {
       </div>
     ),
   },
+  {
+    id: "config-converter",
+    title: "Config Converter",
+    content: (
+      <div className="space-y-4">
+        <p>
+          Convert your Firebase config object to .env format for easier
+          environment variable management:
+        </p>
+        <ConfigConverter />
+      </div>
+    ),
+  },
 ];
 
 // Move tabs outside component to prevent re-creation
@@ -846,6 +860,7 @@ const documentationTabs = [
   { id: "storage-api", label: "Storage API" },
   { id: "rest-auth", label: "REST Auth" },
   { id: "sdk-auth", label: "SDK Auth" },
+  { id: "config-converter", label: "Config Converter" },
   { id: "examples", label: "Examples" },
   { id: "error-handling", label: "Error Handling" },
   { id: "best-practices", label: "Best Practices" },

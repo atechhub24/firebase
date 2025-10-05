@@ -1,14 +1,15 @@
 import React, { useState } from "react";
+import CodeBlock from "./CodeBlock";
 
 const ConfigConverter: React.FC = () => {
   const [inputConfig, setInputConfig] = useState(`const firebaseConfig = {
-  apiKey: "AI**************w",
-  authDomain: "**************.firebaseapp.com",
-  databaseURL: "https://**************-default-rtdb.firebaseio.com",
-  projectId: "**************",
-  storageBucket: "**************.firebasestorage.app",
-  messagingSenderId: "**************",
-  appId: "1:**************:web:**************"
+  apiKey: "AI********w",
+  authDomain: "********.firebaseapp.com",
+  databaseURL: "https://********-default-rtdb.firebaseio.com",
+  projectId: "********",
+  storageBucket: "********.firebasestorage.app",
+  messagingSenderId: "********",
+  appId: "1:********"
 };`);
 
   const [outputEnv, setOutputEnv] = useState("");
@@ -190,13 +191,32 @@ NEXT_PUBLIC_FIREBASE_AUTH_URL="https://identitytoolkit.googleapis.com/v1/account
               </button>
             </div>
           </div>
-          <textarea
-            value={outputEnv}
-            readOnly
-            className="config-converter-textarea config-converter-output"
-            placeholder="Converted .env format will appear here..."
-            rows={12}
-          />
+          <div className="config-converter-code-output">
+            {outputEnv ? (
+              <CodeBlock code={outputEnv} language="bash" title=".env.local" />
+            ) : (
+              <div className="config-converter-placeholder">
+                <div className="config-converter-placeholder-content">
+                  <svg
+                    className="w-8 h-8 text-gray-400 mb-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                  <p className="text-gray-500 text-sm">
+                    Converted .env format will appear here
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

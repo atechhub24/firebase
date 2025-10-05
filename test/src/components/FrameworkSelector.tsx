@@ -47,10 +47,10 @@ const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
     <div className="framework-selector-container">
       <div className="framework-selector-header">
         <h2 className="framework-selector-title">
-          Getting Started with Your Framework
+          Getting Started with Your Technology
         </h2>
         <p className="framework-selector-subtitle">
-          Choose your preferred framework to see tailored examples and setup
+          Choose your preferred technology to see tailored examples and setup
           guides
         </p>
       </div>

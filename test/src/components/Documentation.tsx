@@ -1,73 +1,7 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import CodeBlock from "./CodeBlock";
 import NextJsExample from "./NextJsExample";
 import FrameworkSelector from "./FrameworkSelector";
-
-// Custom styles for enhanced tabs
-const tabStyles = `
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateX(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  .animate-fadeIn {
-    animation: fadeIn 0.3s ease-out;
-  }
-  
-  .animate-slideIn {
-    animation: slideIn 0.2s ease-out;
-  }
-  
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .tab-glow {
-    /* Removed shadow effects */
-  }
-  
-  .tab-button {
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .tab-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-  }
-  
-  .tab-button:hover::before {
-    left: 100%;
-  }
-`;
 
 const PackageManagerTabs: React.FC = () => {
   const [activePm, setActivePm] = useState<string>("npm");
@@ -215,42 +149,29 @@ const PackageManagerTabs: React.FC = () => {
   );
 };
 
-const Documentation: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>("installation");
-  const [selectedFramework, setSelectedFramework] = useState<string>("nextjs");
+// Move sections outside component to prevent re-creation
+const documentationSections = [
+  {
+    id: "installation",
+    title: "Installation",
+    content: (
+      <div className="space-y-4">
+        <p>Install the package along with Firebase:</p>
+        <PackageManagerTabs />
+      </div>
+    ),
+  },
+  {
+    id: "quick-start",
+    title: "Quick Start",
+    content: (
+      <div className="space-y-4">
+        <p>Initialize Firebase and start using the utilities:</p>
 
-  const handleFrameworkSelect = (framework: string) => {
-    setSelectedFramework(framework);
-  };
-
-  const handleExamplesHighlight = () => {
-    setActiveTab("examples");
-  };
-
-  const sections = [
-    {
-      id: "installation",
-      title: "Installation",
-      content: (
-        <div className="space-y-4">
-          <p>Install the package along with Firebase:</p>
-          <PackageManagerTabs />
-        </div>
-      ),
-    },
-    {
-      id: "quick-start",
-      title: "Quick Start",
-      content: (
-        <div className="space-y-4">
-          <p>Initialize Firebase and start using the utilities:</p>
-
-          <div>
-            <h4 className="text-lg font-semibold mb-2">
-              1. Initialize Firebase
-            </h4>
-            <CodeBlock
-              code={`import { initializeApp } from 'firebase/app';
+        <div>
+          <h4 className="text-lg font-semibold mb-2">1. Initialize Firebase</h4>
+          <CodeBlock
+            code={`import { initializeApp } from 'firebase/app';
 
 const firebaseConfig = {
   apiKey: "your-api-key",
@@ -263,16 +184,16 @@ const firebaseConfig = {
 };
 
 initializeApp(firebaseConfig);`}
-              language="javascript"
-            />
-          </div>
+            language="javascript"
+          />
+        </div>
 
-          <div>
-            <h4 className="text-lg font-semibold mb-2">
-              2. Use Database Operations
-            </h4>
-            <CodeBlock
-              code={`import { mutate } from '@atechhub/firebase';
+        <div>
+          <h4 className="text-lg font-semibold mb-2">
+            2. Use Database Operations
+          </h4>
+          <CodeBlock
+            code={`import { mutate } from '@atechhub/firebase';
 
 // Create data
 await mutate({
@@ -287,14 +208,14 @@ const userData = await mutate({
   path: 'users/123',
   action: 'get'
 });`}
-              language="javascript"
-            />
-          </div>
+            language="javascript"
+          />
+        </div>
 
-          <div>
-            <h4 className="text-lg font-semibold mb-2">3. Upload Files</h4>
-            <CodeBlock
-              code={`import { file } from '@atechhub/firebase';
+        <div>
+          <h4 className="text-lg font-semibold mb-2">3. Upload Files</h4>
+          <CodeBlock
+            code={`import { file } from '@atechhub/firebase';
 
 const result = await file.upload({
   file: selectedFile,
@@ -303,50 +224,50 @@ const result = await file.upload({
 });
 
 console.log('File URL:', result.url);`}
-              language="javascript"
-            />
-          </div>
+            language="javascript"
+          />
         </div>
-      ),
-    },
-    {
-      id: "database-api",
-      title: "Database API",
-      content: (
-        <div className="space-y-6">
-          <div>
-            <h4 className="text-lg font-semibold mb-3">mutate(options)</h4>
-            <p className="mb-3">
-              A unified function for all database operations.
-            </p>
+      </div>
+    ),
+  },
+  {
+    id: "database-api",
+    title: "Database API",
+    content: (
+      <div className="space-y-6">
+        <div>
+          <h4 className="text-lg font-semibold mb-3">mutate(options)</h4>
+          <p className="mb-3">
+            A unified function for all database operations.
+          </p>
 
-            <div className="bg-gray-50 p-4 rounded-lg mb-4">
-              <h5 className="font-semibold mb-2">Parameters:</h5>
-              <ul className="space-y-1 text-sm">
-                <li>
-                  <code className="code-inline">path</code> (string) - Database
-                  path
-                </li>
-                <li>
-                  <code className="code-inline">data</code> (object, optional) -
-                  Data to write
-                </li>
-                <li>
-                  <code className="code-inline">action</code> (string) -
-                  'create', 'update', 'delete', 'createWithId', 'get', 'onValue'
-                </li>
-                <li>
-                  <code className="code-inline">actionBy</code> (string,
-                  optional) - User identifier
-                </li>
-              </ul>
-            </div>
+          <div className="bg-gray-50 p-4 rounded-lg mb-4">
+            <h5 className="font-semibold mb-2">Parameters:</h5>
+            <ul className="space-y-1 text-sm">
+              <li>
+                <code className="code-inline">path</code> (string) - Database
+                path
+              </li>
+              <li>
+                <code className="code-inline">data</code> (object, optional) -
+                Data to write
+              </li>
+              <li>
+                <code className="code-inline">action</code> (string) - 'create',
+                'update', 'delete', 'createWithId', 'get', 'onValue'
+              </li>
+              <li>
+                <code className="code-inline">actionBy</code> (string, optional)
+                - User identifier
+              </li>
+            </ul>
+          </div>
 
-            <div className="space-y-4">
-              <div>
-                <h5 className="font-semibold mb-2">Create Data</h5>
-                <CodeBlock
-                  code={`await mutate({
+          <div className="space-y-4">
+            <div>
+              <h5 className="font-semibold mb-2">Create Data</h5>
+              <CodeBlock
+                code={`await mutate({
   path: 'posts/post1',
   data: { 
     title: 'Hello World', 
@@ -356,16 +277,16 @@ console.log('File URL:', result.url);`}
   action: 'create',
   actionBy: 'user123'
 });`}
-                  language="javascript"
-                />
-              </div>
+                language="javascript"
+              />
+            </div>
 
-              <div>
-                <h5 className="font-semibold mb-2">
-                  Create with Auto-Generated ID
-                </h5>
-                <CodeBlock
-                  code={`const newId = await mutate({
+            <div>
+              <h5 className="font-semibold mb-2">
+                Create with Auto-Generated ID
+              </h5>
+              <CodeBlock
+                code={`const newId = await mutate({
   path: 'posts',
   data: { 
     title: 'New Post', 
@@ -376,14 +297,14 @@ console.log('File URL:', result.url);`}
 });
 
 console.log('New post ID:', newId);`}
-                  language="javascript"
-                />
-              </div>
+                language="javascript"
+              />
+            </div>
 
-              <div>
-                <h5 className="font-semibold mb-2">Update Data</h5>
-                <CodeBlock
-                  code={`await mutate({
+            <div>
+              <h5 className="font-semibold mb-2">Update Data</h5>
+              <CodeBlock
+                code={`await mutate({
   path: 'posts/post1',
   data: { 
     title: 'Updated Title',
@@ -392,60 +313,60 @@ console.log('New post ID:', newId);`}
   action: 'update',
   actionBy: 'user123'
 });`}
-                  language="javascript"
-                />
-              </div>
+                language="javascript"
+              />
+            </div>
 
-              <div>
-                <h5 className="font-semibold mb-2">Get Data</h5>
-                <CodeBlock
-                  code={`const data = await mutate({
+            <div>
+              <h5 className="font-semibold mb-2">Get Data</h5>
+              <CodeBlock
+                code={`const data = await mutate({
   path: 'posts/post1',
   action: 'get'
 });
 
 console.log('Post data:', data);`}
-                  language="javascript"
-                />
-              </div>
+                language="javascript"
+              />
+            </div>
 
-              <div>
-                <h5 className="font-semibold mb-2">Listen for Changes</h5>
-                <CodeBlock
-                  code={`const unsubscribe = await mutate({
+            <div>
+              <h5 className="font-semibold mb-2">Listen for Changes</h5>
+              <CodeBlock
+                code={`const unsubscribe = await mutate({
   path: 'posts',
   action: 'onValue'
 });
 
 // Remember to unsubscribe when component unmounts
 // unsubscribe();`}
-                  language="javascript"
-                />
-              </div>
+                language="javascript"
+              />
+            </div>
 
-              <div>
-                <h5 className="font-semibold mb-2">Delete Data</h5>
-                <CodeBlock
-                  code={`await mutate({
+            <div>
+              <h5 className="font-semibold mb-2">Delete Data</h5>
+              <CodeBlock
+                code={`await mutate({
   path: 'posts/post1',
   action: 'delete'
 });`}
-                  language="javascript"
-                />
-              </div>
+                language="javascript"
+              />
             </div>
           </div>
+        </div>
 
-          <div>
-            <h4 className="text-lg font-semibold mb-3">Utility Functions</h4>
+        <div>
+          <h4 className="text-lg font-semibold mb-3">Utility Functions</h4>
 
-            <div className="mb-4">
-              <h5 className="font-semibold mb-2">removeUndefinedFields(obj)</h5>
-              <p className="mb-2">
-                Recursively removes undefined fields from objects/arrays.
-              </p>
-              <CodeBlock
-                code={`import { removeUndefinedFields } from '@atechhub/firebase';
+          <div className="mb-4">
+            <h5 className="font-semibold mb-2">removeUndefinedFields(obj)</h5>
+            <p className="mb-2">
+              Recursively removes undefined fields from objects/arrays.
+            </p>
+            <CodeBlock
+              code={`import { removeUndefinedFields } from '@atechhub/firebase';
 
 const cleanData = removeUndefinedFields({
   name: 'John',
@@ -457,19 +378,17 @@ const cleanData = removeUndefinedFields({
 });
 
 // Result: { name: 'John', address: { street: '123 Main St' } }`}
-                language="javascript"
-              />
-            </div>
+              language="javascript"
+            />
+          </div>
 
-            <div>
-              <h5 className="font-semibold mb-2">
-                generateSystemInfo(actionBy)
-              </h5>
-              <p className="mb-2">
-                Generates system information for tracking operations.
-              </p>
-              <CodeBlock
-                code={`import { generateSystemInfo } from '@atechhub/firebase';
+          <div>
+            <h5 className="font-semibold mb-2">generateSystemInfo(actionBy)</h5>
+            <p className="mb-2">
+              Generates system information for tracking operations.
+            </p>
+            <CodeBlock
+              code={`import { generateSystemInfo } from '@atechhub/firebase';
 
 const systemInfo = generateSystemInfo('user123');
 console.log(systemInfo);
@@ -484,52 +403,52 @@ console.log(systemInfo);
 //   screenResolution: "1920x1080",
 //   browser: "Chrome"
 // }`}
-                language="javascript"
-              />
-            </div>
+              language="javascript"
+            />
           </div>
         </div>
-      ),
-    },
-    {
-      id: "storage-api",
-      title: "Storage API",
-      content: (
-        <div className="space-y-6">
-          <div>
-            <h4 className="text-lg font-semibold mb-3">file.upload(options)</h4>
-            <p className="mb-3">
-              Upload files to Firebase Storage with progress tracking.
-            </p>
+      </div>
+    ),
+  },
+  {
+    id: "storage-api",
+    title: "Storage API",
+    content: (
+      <div className="space-y-6">
+        <div>
+          <h4 className="text-lg font-semibold mb-3">file.upload(options)</h4>
+          <p className="mb-3">
+            Upload files to Firebase Storage with progress tracking.
+          </p>
 
-            <div className="bg-gray-50 p-4 rounded-lg mb-4">
-              <h5 className="font-semibold mb-2">Parameters:</h5>
-              <ul className="space-y-1 text-sm">
-                <li>
-                  <code className="code-inline">file</code> (File) - File to
-                  upload
-                </li>
-                <li>
-                  <code className="code-inline">path</code> (string) - Storage
-                  path
-                </li>
-                <li>
-                  <code className="code-inline">metadata</code> (object,
-                  optional) - Custom metadata
-                </li>
-                <li>
-                  <code className="code-inline">onProgress</code> (function,
-                  optional) - Progress callback
-                </li>
-                <li>
-                  <code className="code-inline">uploadedBy</code> (string,
-                  optional) - User identifier
-                </li>
-              </ul>
-            </div>
+          <div className="bg-gray-50 p-4 rounded-lg mb-4">
+            <h5 className="font-semibold mb-2">Parameters:</h5>
+            <ul className="space-y-1 text-sm">
+              <li>
+                <code className="code-inline">file</code> (File) - File to
+                upload
+              </li>
+              <li>
+                <code className="code-inline">path</code> (string) - Storage
+                path
+              </li>
+              <li>
+                <code className="code-inline">metadata</code> (object, optional)
+                - Custom metadata
+              </li>
+              <li>
+                <code className="code-inline">onProgress</code> (function,
+                optional) - Progress callback
+              </li>
+              <li>
+                <code className="code-inline">uploadedBy</code> (string,
+                optional) - User identifier
+              </li>
+            </ul>
+          </div>
 
-            <CodeBlock
-              code={`import { file } from '@atechhub/firebase';
+          <CodeBlock
+            code={`import { file } from '@atechhub/firebase';
 
 const result = await file.upload({
   file: selectedFile,
@@ -554,27 +473,27 @@ console.log('Upload result:', result);
 //   size: 1024000,
 //   metadata: { category: 'document', ... }
 // }`}
-              language="javascript"
-            />
-          </div>
+            language="javascript"
+          />
+        </div>
 
-          <div>
-            <h4 className="text-lg font-semibold mb-3">file.delete(path)</h4>
-            <p className="mb-3">Delete a file from Firebase Storage.</p>
+        <div>
+          <h4 className="text-lg font-semibold mb-3">file.delete(path)</h4>
+          <p className="mb-3">Delete a file from Firebase Storage.</p>
 
-            <CodeBlock
-              code={`await file.delete('uploads/documents/old-report.pdf');
+          <CodeBlock
+            code={`await file.delete('uploads/documents/old-report.pdf');
 console.log('File deleted successfully');`}
-              language="javascript"
-            />
-          </div>
+            language="javascript"
+          />
+        </div>
 
-          <div>
-            <h4 className="text-lg font-semibold mb-3">file.list(path)</h4>
-            <p className="mb-3">List all files in a storage directory.</p>
+        <div>
+          <h4 className="text-lg font-semibold mb-3">file.list(path)</h4>
+          <p className="mb-3">List all files in a storage directory.</p>
 
-            <CodeBlock
-              code={`const files = await file.list('uploads/documents/');
+          <CodeBlock
+            code={`const files = await file.list('uploads/documents/');
 
 console.log('Files in directory:', files);
 // [
@@ -589,30 +508,30 @@ console.log('Files in directory:', files);
 //   },
 //   ...
 // ]`}
-              language="javascript"
-            />
-          </div>
+            language="javascript"
+          />
         </div>
-      ),
-    },
-    {
-      id: "rest-auth",
-      title: "REST Auth",
-      content: (
-        <div className="space-y-6">
-          <div>
-            <h4 className="text-lg font-semibold mb-3">
-              REST Auth (Email/Password)
-            </h4>
-            <p className="mb-3">
-              Add lightweight REST-based auth helpers for environments where you
-              don't want to pull the full Firebase Auth SDK.
-            </p>
+      </div>
+    ),
+  },
+  {
+    id: "rest-auth",
+    title: "REST Auth",
+    content: (
+      <div className="space-y-6">
+        <div>
+          <h4 className="text-lg font-semibold mb-3">
+            REST Auth (Email/Password)
+          </h4>
+          <p className="mb-3">
+            Add lightweight REST-based auth helpers for environments where you
+            don't want to pull the full Firebase Auth SDK.
+          </p>
 
-            <div>
-              <h5 className="font-semibold mb-2">Configure</h5>
-              <CodeBlock
-                code={`import { configureAuth } from "@atechhub/firebase";
+          <div>
+            <h5 className="font-semibold mb-2">Configure</h5>
+            <CodeBlock
+              code={`import { configureAuth } from "@atechhub/firebase";
 
 configureAuth({
   authUrl: "https://identitytoolkit.googleapis.com/v1/accounts",
@@ -621,14 +540,14 @@ configureAuth({
 // Or via env vars:
 // NEXT_PUBLIC_FIREBASE_AUTH_URL=https://identitytoolkit.googleapis.com/v1/accounts
 // NEXT_PUBLIC_FIREBASE_API_KEY=your-firebase-web-api-key`}
-                language="javascript"
-              />
-            </div>
+              language="javascript"
+            />
+          </div>
 
-            <div>
-              <h5 className="font-semibold mb-2">Use</h5>
-              <CodeBlock
-                code={`import {
+          <div>
+            <h5 className="font-semibold mb-2">Use</h5>
+            <CodeBlock
+              code={`import {
   createUser,
   changePassword,
   deleteUser,
@@ -647,14 +566,14 @@ await changePassword(
 
 // Delete account
 await deleteUser("user@example.com", "currentPassword123");`}
-                language="javascript"
-              />
-            </div>
+              language="javascript"
+            />
+          </div>
 
-            <div>
-              <h5 className="font-semibold mb-2">Error handling</h5>
-              <CodeBlock
-                code={`try {
+          <div>
+            <h5 className="font-semibold mb-2">Error handling</h5>
+            <CodeBlock
+              code={`try {
   await createUser(email, password);
 } catch (error) {
   if (error instanceof FirebaseAuthError) {
@@ -662,31 +581,31 @@ await deleteUser("user@example.com", "currentPassword123");`}
     console.error("Auth error:", error.message, error.code);
   }
 }`}
-                language="javascript"
-              />
-            </div>
+              language="javascript"
+            />
           </div>
         </div>
-      ),
-    },
-    {
-      id: "sdk-auth",
-      title: "SDK Auth",
-      content: (
-        <div className="space-y-6">
-          <div>
-            <h4 className="text-lg font-semibold mb-3">
-              SDK Auth (Email/Password)
-            </h4>
-            <p className="mb-3">
-              Use Firebase Auth SDK with a clean, type-safe interface for
-              email/password authentication.
-            </p>
+      </div>
+    ),
+  },
+  {
+    id: "sdk-auth",
+    title: "SDK Auth",
+    content: (
+      <div className="space-y-6">
+        <div>
+          <h4 className="text-lg font-semibold mb-3">
+            SDK Auth (Email/Password)
+          </h4>
+          <p className="mb-3">
+            Use Firebase Auth SDK with a clean, type-safe interface for
+            email/password authentication.
+          </p>
 
-            <div>
-              <h5 className="font-semibold mb-2">Setup</h5>
-              <CodeBlock
-                code={`import { initializeApp } from "firebase/app";
+          <div>
+            <h5 className="font-semibold mb-2">Setup</h5>
+            <CodeBlock
+              code={`import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const app = initializeApp(firebaseConfig);
@@ -694,14 +613,14 @@ const auth = getAuth(app);
 
 // Import our auth helper
 import { firebaseAuth } from "@atechhub/firebase";`}
-                language="javascript"
-              />
-            </div>
+              language="javascript"
+            />
+          </div>
 
-            <div>
-              <h5 className="font-semibold mb-2">Usage</h5>
-              <CodeBlock
-                code={`import { firebaseAuth } from "@atechhub/firebase";
+          <div>
+            <h5 className="font-semibold mb-2">Usage</h5>
+            <CodeBlock
+              code={`import { firebaseAuth } from "@atechhub/firebase";
 
 // 🔐 LOGIN - Sign in existing user
 const userCredential = await firebaseAuth({
@@ -727,14 +646,14 @@ await firebaseAuth({
   action: "changePassword",
   newPassword: "newSecurePassword456",
 });`}
-                language="javascript"
-              />
-            </div>
+              language="javascript"
+            />
+          </div>
 
-            <div>
-              <h5 className="font-semibold mb-2">Error Handling</h5>
-              <CodeBlock
-                code={`try {
+          <div>
+            <h5 className="font-semibold mb-2">Error Handling</h5>
+            <CodeBlock
+              code={`try {
   await firebaseAuth({
     action: "login",
     email: "user@example.com",
@@ -751,33 +670,31 @@ await firebaseAuth({
     console.error("Authentication error:", error.message);
   }
 }`}
-                language="javascript"
-              />
-            </div>
+              language="javascript"
+            />
           </div>
         </div>
-      ),
-    },
-    {
-      id: "examples",
-      title: "Complete Examples",
-      content: (
-        <div className="space-y-6">
-          <NextJsExample />
-        </div>
-      ),
-    },
-    {
-      id: "error-handling",
-      title: "Error Handling",
-      content: (
-        <div className="space-y-4">
-          <p>
-            All functions throw errors that should be handled appropriately:
-          </p>
+      </div>
+    ),
+  },
+  {
+    id: "examples",
+    title: "Complete Examples",
+    content: (
+      <div className="space-y-6">
+        <NextJsExample />
+      </div>
+    ),
+  },
+  {
+    id: "error-handling",
+    title: "Error Handling",
+    content: (
+      <div className="space-y-4">
+        <p>All functions throw errors that should be handled appropriately:</p>
 
-          <CodeBlock
-            code={`try {
+        <CodeBlock
+          code={`try {
   await mutate({
     path: 'posts/123',
     action: 'get'
@@ -792,77 +709,73 @@ await firebaseAuth({
     console.error('Database error:', error);
   }
 }`}
-            language="javascript"
-          />
+          language="javascript"
+        />
 
-          <div className="bg-yellow-50 p-4 rounded-lg">
-            <h5 className="font-semibold text-yellow-800 mb-2">
-              Common Errors:
-            </h5>
-            <ul className="text-sm text-yellow-700 space-y-1">
-              <li>
-                <strong>Firebase not initialized:</strong> Call initializeApp()
-                first
-              </li>
-              <li>
-                <strong>Permission denied:</strong> Check your Firebase Security
-                Rules
-              </li>
-              <li>
-                <strong>Network errors:</strong> Check internet connection
-              </li>
-              <li>
-                <strong>Invalid path:</strong> Ensure database path is valid
-              </li>
-              <li>
-                <strong>Storage errors:</strong> Check file size limits and
-                permissions
-              </li>
+        <div className="bg-yellow-50 p-4 rounded-lg">
+          <h5 className="font-semibold text-yellow-800 mb-2">Common Errors:</h5>
+          <ul className="text-sm text-yellow-700 space-y-1">
+            <li>
+              <strong>Firebase not initialized:</strong> Call initializeApp()
+              first
+            </li>
+            <li>
+              <strong>Permission denied:</strong> Check your Firebase Security
+              Rules
+            </li>
+            <li>
+              <strong>Network errors:</strong> Check internet connection
+            </li>
+            <li>
+              <strong>Invalid path:</strong> Ensure database path is valid
+            </li>
+            <li>
+              <strong>Storage errors:</strong> Check file size limits and
+              permissions
+            </li>
+          </ul>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "best-practices",
+    title: "Best Practices",
+    content: (
+      <div className="space-y-4">
+        <div className="grid gap-4">
+          <div className="bg-green-50 p-4 rounded-lg">
+            <h5 className="font-semibold text-green-800 mb-2">✅ Do:</h5>
+            <ul className="text-sm text-green-700 space-y-1">
+              <li>Always initialize Firebase before using utilities</li>
+              <li>Handle errors appropriately in your application</li>
+              <li>Use meaningful paths for better data organization</li>
+              <li>Include actionBy parameter for audit trails</li>
+              <li>Clean up listeners to prevent memory leaks</li>
+              <li>Use appropriate file paths for storage organization</li>
+              <li>Set proper metadata for uploaded files</li>
+              <li>Validate data before sending to Firebase</li>
+            </ul>
+          </div>
+
+          <div className="bg-red-50 p-4 rounded-lg">
+            <h5 className="font-semibold text-red-800 mb-2">❌ Don't:</h5>
+            <ul className="text-sm text-red-700 space-y-1">
+              <li>Forget to handle Firebase initialization errors</li>
+              <li>Leave real-time listeners running after component unmount</li>
+              <li>Store sensitive data in Firebase without proper rules</li>
+              <li>Use undefined values in data objects</li>
+              <li>Upload files without progress tracking for large files</li>
+              <li>Ignore file size limits in storage operations</li>
+              <li>Use overly nested database structures</li>
             </ul>
           </div>
         </div>
-      ),
-    },
-    {
-      id: "best-practices",
-      title: "Best Practices",
-      content: (
-        <div className="space-y-4">
-          <div className="grid gap-4">
-            <div className="bg-green-50 p-4 rounded-lg">
-              <h5 className="font-semibold text-green-800 mb-2">✅ Do:</h5>
-              <ul className="text-sm text-green-700 space-y-1">
-                <li>Always initialize Firebase before using utilities</li>
-                <li>Handle errors appropriately in your application</li>
-                <li>Use meaningful paths for better data organization</li>
-                <li>Include actionBy parameter for audit trails</li>
-                <li>Clean up listeners to prevent memory leaks</li>
-                <li>Use appropriate file paths for storage organization</li>
-                <li>Set proper metadata for uploaded files</li>
-                <li>Validate data before sending to Firebase</li>
-              </ul>
-            </div>
 
-            <div className="bg-red-50 p-4 rounded-lg">
-              <h5 className="font-semibold text-red-800 mb-2">❌ Don't:</h5>
-              <ul className="text-sm text-red-700 space-y-1">
-                <li>Forget to handle Firebase initialization errors</li>
-                <li>
-                  Leave real-time listeners running after component unmount
-                </li>
-                <li>Store sensitive data in Firebase without proper rules</li>
-                <li>Use undefined values in data objects</li>
-                <li>Upload files without progress tracking for large files</li>
-                <li>Ignore file size limits in storage operations</li>
-                <li>Use overly nested database structures</li>
-              </ul>
-            </div>
-          </div>
-
-          <div>
-            <h5 className="font-semibold mb-2">React Integration Example:</h5>
-            <CodeBlock
-              code={`import { useEffect, useState } from 'react';
+        <div>
+          <h5 className="font-semibold mb-2">React Integration Example:</h5>
+          <CodeBlock
+            code={`import { useEffect, useState } from 'react';
 import { mutate } from '@atechhub/firebase';
 
 function useFirebaseData(path) {
@@ -917,41 +830,48 @@ function PostsList() {
     </div>
   );
 }`}
-              language="javascript"
-            />
-          </div>
+            language="javascript"
+          />
         </div>
-      ),
-    },
-  ];
+      </div>
+    ),
+  },
+];
 
-  const tabs = [
-    { id: "installation", label: "Installation" },
-    { id: "quick-start", label: "Quick Start" },
-    { id: "database-api", label: "Database API" },
-    { id: "storage-api", label: "Storage API" },
-    { id: "rest-auth", label: "REST Auth" },
-    { id: "sdk-auth", label: "SDK Auth" },
-    { id: "examples", label: "Examples" },
-    { id: "error-handling", label: "Error Handling" },
-    { id: "best-practices", label: "Best Practices" },
-  ];
+// Move tabs outside component to prevent re-creation
+const documentationTabs = [
+  { id: "installation", label: "Installation" },
+  { id: "quick-start", label: "Quick Start" },
+  { id: "database-api", label: "Database API" },
+  { id: "storage-api", label: "Storage API" },
+  { id: "rest-auth", label: "REST Auth" },
+  { id: "sdk-auth", label: "SDK Auth" },
+  { id: "examples", label: "Examples" },
+  { id: "error-handling", label: "Error Handling" },
+  { id: "best-practices", label: "Best Practices" },
+];
 
-  const activeSection = sections.find((section) => section.id === activeTab);
+const Documentation: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<string>("installation");
+
+  const handleExamplesHighlight = useCallback(() => {
+    setActiveTab("examples");
+  }, []);
+
+  const activeSection = documentationSections.find(
+    (section) => section.id === activeTab
+  );
 
   return (
     <div className="max-width-6xl mx-auto">
-      {/* Inject custom styles */}
-      <style dangerouslySetInnerHTML={{ __html: tabStyles }} />
-
       {/* Tab Navigation */}
       <div className="modern-tab-container mb-6 overflow-hidden">
-        <nav className="flex overflow-x-auto scrollbar-hide">
-          {tabs.map((tab) => (
+        <nav className="flex overflow-x-auto documentation-scrollbar-hide">
+          {documentationTabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`tab-button relative whitespace-nowrap py-3 px-4 sm:py-4 sm:px-6 font-medium text-xs sm:text-sm transition-all duration-300 ease-in-out ${
+              className={`documentation-tab-button relative whitespace-nowrap py-3 px-4 sm:py-4 sm:px-6 font-medium text-xs sm:text-sm transition-all duration-300 ease-in-out ${
                 activeTab === tab.id
                   ? "text-blue-600 active"
                   : "text-gray-600 hover:text-gray-800"
@@ -969,7 +889,9 @@ function PostsList() {
           <div className="prose max-w-none">
             <div className="bg-white rounded-b-xl p-4 sm:p-8 relative">
               {/* Content fade-in effect */}
-              <div className="animate-fadeIn">{activeSection.content}</div>
+              <div className="documentation-animate-fadeIn">
+                {activeSection.content}
+              </div>
             </div>
           </div>
         )}
@@ -978,7 +900,7 @@ function PostsList() {
       {/* Framework Selector Section - After All Tabs */}
       <div className="mt-6">
         <FrameworkSelector
-          onFrameworkSelect={handleFrameworkSelect}
+          onFrameworkSelect={() => {}} // No longer needed
           onExamplesHighlight={handleExamplesHighlight}
         />
       </div>

@@ -5547,3 +5547,103 @@ body {
     padding: 1.5rem;
   }
 }
+
+/* Documentation Tab Styles */
+@keyframes documentation-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes documentation-slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.documentation-animate-fadeIn {
+  animation: documentation-fadeIn 0.3s ease-out;
+}
+
+.documentation-animate-slideIn {
+  animation: documentation-slideIn 0.2s ease-out;
+}
+
+.documentation-scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.documentation-scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.documentation-tab-glow {
+  /* Removed shadow effects */
+}
+
+.documentation-tab-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.documentation-tab-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.documentation-tab-button:hover::before {
+  left: 100%;
+}
+
+/* Ensure the existing tab-button styles also apply to documentation tabs */
+.documentation-tab-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.documentation-tab-button.active {
+  color: #2563eb;
+  background-color: white;
+  border-bottom: 2px solid #2563eb;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.documentation-tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #2563eb;
+  border-radius: 1px 1px 0 0;
+}
+
+.documentation-tab-button:hover {
+  color: #1f2937;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.documentation-tab-button {
+  background-color: transparent;
+  border: none;
+  border-radius: 0.5rem 0.5rem 0 0;
+}

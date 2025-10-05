@@ -13,10 +13,12 @@ const ConfigConverter: React.FC = () => {
 };`);
 
   const [outputEnv, setOutputEnv] = useState("");
-  const [copied, setCopied] = useState(false);
+  const [framework, setFramework] = useState("nextjs");
 
-  const convertToEnv = () => {
+  const convertToEnv = (selectedFramework?: string) => {
     try {
+      const currentFramework = selectedFramework || framework;
+
       // Extract values from the JavaScript config object
       const apiKeyMatch = inputConfig.match(/apiKey:\s*["']([^"']+)["']/);
       const authDomainMatch = inputConfig.match(
@@ -34,36 +36,45 @@ const ConfigConverter: React.FC = () => {
       );
       const appIdMatch = inputConfig.match(/appId:\s*["']([^"']+)["']/);
 
-      const envFormat = `NEXT_PUBLIC_FIREBASE_API_KEY="${
-        apiKeyMatch ? apiKeyMatch[1] : ""
-      }"
+      let envFormat = "";
+
+      if (currentFramework === "nextjs") {
+        envFormat = `NEXT_PUBLIC_FIREBASE_API_KEY="${
+          apiKeyMatch ? apiKeyMatch[1] : ""
+        }"
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN="${authDomainMatch ? authDomainMatch[1] : ""}"
 NEXT_PUBLIC_FIREBASE_DATABASE_URL="${
-        databaseURLMatch ? databaseURLMatch[1] : ""
-      }"
+          databaseURLMatch ? databaseURLMatch[1] : ""
+        }"
 NEXT_PUBLIC_FIREBASE_PROJECT_ID="${projectIdMatch ? projectIdMatch[1] : ""}"
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET="${
-        storageBucketMatch ? storageBucketMatch[1] : ""
-      }"
+          storageBucketMatch ? storageBucketMatch[1] : ""
+        }"
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID="${
-        messagingSenderIdMatch ? messagingSenderIdMatch[1] : ""
-      }"
+          messagingSenderIdMatch ? messagingSenderIdMatch[1] : ""
+        }"
 NEXT_PUBLIC_FIREBASE_APP_ID="${appIdMatch ? appIdMatch[1] : ""}"
 NEXT_PUBLIC_FIREBASE_AUTH_URL="https://identitytoolkit.googleapis.com/v1/accounts"`;
+      } else if (currentFramework === "vite") {
+        envFormat = `VITE_FIREBASE_API_KEY="${
+          apiKeyMatch ? apiKeyMatch[1] : ""
+        }"
+VITE_FIREBASE_AUTH_DOMAIN="${authDomainMatch ? authDomainMatch[1] : ""}"
+VITE_FIREBASE_DATABASE_URL="${databaseURLMatch ? databaseURLMatch[1] : ""}"
+VITE_FIREBASE_PROJECT_ID="${projectIdMatch ? projectIdMatch[1] : ""}"
+VITE_FIREBASE_STORAGE_BUCKET="${
+          storageBucketMatch ? storageBucketMatch[1] : ""
+        }"
+VITE_FIREBASE_MESSAGING_SENDER_ID="${
+          messagingSenderIdMatch ? messagingSenderIdMatch[1] : ""
+        }"
+VITE_FIREBASE_APP_ID="${appIdMatch ? appIdMatch[1] : ""}"
+VITE_FIREBASE_AUTH_URL="https://identitytoolkit.googleapis.com/v1/accounts"`;
+      }
 
       setOutputEnv(envFormat);
     } catch (error) {
       setOutputEnv("Error: Please check your Firebase config format");
-    }
-  };
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(outputEnv);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy text: ", err);
     }
   };
 
@@ -80,7 +91,7 @@ NEXT_PUBLIC_FIREBASE_AUTH_URL="https://identitytoolkit.googleapis.com/v1/account
         </h3>
         <p className="config-converter-description">
           Paste your Firebase config object and convert it to .env format for
-          Next.js projects
+          your framework
         </p>
       </div>
 
@@ -93,7 +104,7 @@ NEXT_PUBLIC_FIREBASE_AUTH_URL="https://identitytoolkit.googleapis.com/v1/account
             </h4>
             <div className="config-converter-actions">
               <button
-                onClick={convertToEnv}
+                onClick={() => convertToEnv()}
                 className="config-converter-button config-converter-button-primary"
               >
                 <svg
@@ -145,55 +156,41 @@ NEXT_PUBLIC_FIREBASE_AUTH_URL="https://identitytoolkit.googleapis.com/v1/account
         <div className="config-converter-output-section">
           <div className="config-converter-section-header">
             <h4 className="config-converter-section-title">
-              Output: .env Format
+              Output: .env Format ({framework === "nextjs" ? "Next.js" : "Vite"}
+              )
             </h4>
             <div className="config-converter-actions">
-              <button
-                onClick={handleCopy}
-                className="config-converter-button config-converter-button-primary"
-                disabled={!outputEnv}
-              >
-                {copied ? (
-                  <>
-                    <svg
-                      className="w-4 h-4 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <svg
-                      className="w-4 h-4 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                      />
-                    </svg>
-                    Copy
-                  </>
-                )}
-              </button>
+              <div className="config-converter-framework-selector">
+                <label
+                  htmlFor="framework-select"
+                  className="config-converter-label"
+                >
+                  Framework:
+                </label>
+                <select
+                  id="framework-select"
+                  value={framework}
+                  onChange={(e) => {
+                    setFramework(e.target.value);
+                    if (outputEnv) {
+                      convertToEnv(e.target.value);
+                    }
+                  }}
+                  className="config-converter-select"
+                >
+                  <option value="nextjs">Next.js</option>
+                  <option value="vite">Vite</option>
+                </select>
+              </div>
             </div>
           </div>
           <div className="config-converter-code-output">
             {outputEnv ? (
-              <CodeBlock code={outputEnv} language="bash" title=".env.local" />
+              <CodeBlock
+                code={outputEnv}
+                language="bash"
+                title={framework === "nextjs" ? ".env.local" : ".env"}
+              />
             ) : (
               <div className="config-converter-placeholder">
                 <div className="config-converter-placeholder-content">
@@ -238,19 +235,23 @@ NEXT_PUBLIC_FIREBASE_AUTH_URL="https://identitytoolkit.googleapis.com/v1/account
           <h4 className="config-converter-info-title">Usage Instructions</h4>
         </div>
         <ul className="config-converter-info-list">
+          <li>Select your framework (Next.js or Vite)</li>
           <li>Paste your Firebase config object in the input area</li>
           <li>Click "Convert" to generate the .env format</li>
           <li>
-            Copy the output and save it as <code>.env.local</code> in your
-            Next.js project
+            Copy the output and save it as{" "}
+            <code>{framework === "nextjs" ? ".env.local" : ".env"}</code> in
+            your
+            {framework === "nextjs" ? " Next.js" : " Vite"} project
           </li>
           <li>
-            Make sure to add <code>.env.local</code> to your{" "}
-            <code>.gitignore</code> file
+            Make sure to add{" "}
+            <code>{framework === "nextjs" ? ".env.local" : ".env"}</code> to
+            your <code>.gitignore</code> file
           </li>
           <li>
-            Restart your Next.js development server after adding the environment
-            variables
+            Restart your {framework === "nextjs" ? "Next.js" : "Vite"}{" "}
+            development server after adding the environment variables
           </li>
         </ul>
       </div>

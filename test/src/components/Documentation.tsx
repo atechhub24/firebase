@@ -1,6 +1,7 @@
 import { useState } from "react";
 import CodeBlock from "./CodeBlock";
 import NextJsExample from "./NextJsExample";
+import FrameworkSelector from "./FrameworkSelector";
 
 // Custom styles for enhanced tabs
 const tabStyles = `
@@ -216,6 +217,15 @@ const PackageManagerTabs: React.FC = () => {
 
 const Documentation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("installation");
+  const [selectedFramework, setSelectedFramework] = useState<string>("nextjs");
+
+  const handleFrameworkSelect = (framework: string) => {
+    setSelectedFramework(framework);
+  };
+
+  const handleExamplesHighlight = () => {
+    setActiveTab("examples");
+  };
 
   const sections = [
     {
@@ -954,7 +964,7 @@ function PostsList() {
       </div>
 
       {/* Tab Content */}
-      <div className="min-h-[400px] sm:min-h-[600px]">
+      <div className="min-h-[200px]">
         {activeSection && (
           <div className="prose max-w-none">
             <div className="bg-white rounded-b-xl p-4 sm:p-8 relative">
@@ -963,6 +973,14 @@ function PostsList() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Framework Selector Section - After All Tabs */}
+      <div className="mt-6">
+        <FrameworkSelector
+          onFrameworkSelect={handleFrameworkSelect}
+          onExamplesHighlight={handleExamplesHighlight}
+        />
       </div>
 
       <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl transition-all duration-300">

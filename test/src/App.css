@@ -5900,7 +5900,7 @@ body {
 }
 
 .config-converter-tab-active img {
-  filter: brightness(0) invert(1);
+  /* Keep original icon colors */
 }
 
 @media (max-width: 768px) {

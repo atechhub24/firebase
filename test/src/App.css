@@ -5307,3 +5307,243 @@ body {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
+
+/* Framework Selector Styles */
+.framework-selector-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.framework-selector-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.framework-selector-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.framework-selector-subtitle {
+  color: #6b7280;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.framework-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.framework-card {
+  position: relative;
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  border: 2px solid #e5e7eb;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.framework-card-available {
+  border-color: #d1d5db;
+}
+
+.framework-card-available:hover {
+  border-color: #3b82f6;
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.framework-card-selected {
+  border-color: #3b82f6;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1),
+    0 10px 10px -5px rgba(59, 130, 246, 0.04);
+}
+
+.framework-card-disabled {
+  border-color: #e5e7eb;
+  background: #f9fafb;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.framework-logo-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.framework-logo {
+  width: 80px;
+  height: 80px;
+  transition: all 0.3s ease;
+}
+
+.framework-logo-active {
+  filter: none;
+}
+
+.framework-logo-selected {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.3));
+}
+
+.framework-logo-disabled {
+  filter: grayscale(100%) brightness(0.7);
+}
+
+.framework-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(
+    circle,
+    rgba(59, 130, 246, 0.2) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  animation: framework-pulse 2s infinite;
+  pointer-events: none;
+}
+
+@keyframes framework-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+.framework-info {
+  text-align: center;
+}
+
+.framework-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.framework-description {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.framework-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.framework-status.available {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.framework-status.coming-soon {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.framework-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(249, 250, 251, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+}
+
+.framework-coming-soon-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #6b7280;
+  opacity: 0.8;
+}
+
+.framework-selected-info {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1px solid #bfdbfe;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  animation: framework-slideIn 0.5s ease-out;
+}
+
+@keyframes framework-slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.framework-selected-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.framework-selected-icon {
+  font-size: 2rem;
+}
+
+.framework-selected-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e40af;
+  margin-bottom: 0.25rem;
+}
+
+.framework-selected-description {
+  color: #3730a3;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .framework-selector-title {
+    font-size: 1.5rem;
+  }
+
+  .framework-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .framework-card {
+    padding: 1.5rem;
+  }
+}

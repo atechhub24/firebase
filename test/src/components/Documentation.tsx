@@ -1,8 +1,8 @@
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import CodeBlock from "./CodeBlock";
-import NextJsExample from "./NextJsExample";
-import FrameworkSelector from "./FrameworkSelector";
 import ConfigConverter from "./ConfigConverter";
+import FrameworkSelector from "./FrameworkSelector";
+import NextJsExample from "./NextJsExample";
 
 const PackageManagerTabs: React.FC = () => {
   const [activePm, setActivePm] = useState<string>("npm");
@@ -840,15 +840,7 @@ function PostsList() {
   {
     id: "config-converter",
     title: "Config Converter",
-    content: (
-      <div className="space-y-4">
-        <p>
-          Convert your Firebase config object to .env format for easier
-          environment variable management:
-        </p>
-        <ConfigConverter />
-      </div>
-    ),
+    content: <ConfigConverter />,
   },
 ];
 

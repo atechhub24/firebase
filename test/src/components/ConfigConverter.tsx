@@ -160,27 +160,43 @@ VITE_FIREBASE_AUTH_URL="https://identitytoolkit.googleapis.com/v1/accounts"`;
               )
             </h4>
             <div className="config-converter-actions">
-              <div className="config-converter-framework-selector">
-                <label
-                  htmlFor="framework-select"
-                  className="config-converter-label"
-                >
-                  Framework:
-                </label>
-                <select
-                  id="framework-select"
-                  value={framework}
-                  onChange={(e) => {
-                    setFramework(e.target.value);
+              <div className="config-converter-framework-tabs">
+                <button
+                  className={`config-converter-tab ${
+                    framework === "nextjs" ? "config-converter-tab-active" : ""
+                  }`}
+                  onClick={() => {
+                    setFramework("nextjs");
                     if (outputEnv) {
-                      convertToEnv(e.target.value);
+                      convertToEnv("nextjs");
                     }
                   }}
-                  className="config-converter-select"
                 >
-                  <option value="nextjs">Next.js</option>
-                  <option value="vite">Vite</option>
-                </select>
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg"
+                    alt="Next.js"
+                    className="w-4 h-4 mr-2"
+                  />
+                  Next.js
+                </button>
+                <button
+                  className={`config-converter-tab ${
+                    framework === "vite" ? "config-converter-tab-active" : ""
+                  }`}
+                  onClick={() => {
+                    setFramework("vite");
+                    if (outputEnv) {
+                      convertToEnv("vite");
+                    }
+                  }}
+                >
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg"
+                    alt="Vite"
+                    className="w-4 h-4 mr-2"
+                  />
+                  Vite
+                </button>
               </div>
             </div>
           </div>

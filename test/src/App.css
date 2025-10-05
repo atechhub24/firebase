@@ -5750,7 +5750,7 @@ body {
   border: none;
   outline: none;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   line-height: 1.5;
   resize: vertical;
   min-height: 300px;
@@ -5771,6 +5771,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.config-converter-code-output .code-block-code {
+  font-size: 0.75rem !important;
+  line-height: 1.4;
 }
 
 .config-converter-placeholder {
